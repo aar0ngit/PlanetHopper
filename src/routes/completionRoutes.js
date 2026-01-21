@@ -5,8 +5,9 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/completionController');
+const jwtMiddleware = require('../middewares/jwtmiddleware');
 
-router.post('/:challenge_id/', controller.validateUser, controller.validateChallenge, controller.completeChallenge);// endpoint to log a completion with middleware for user and challenge validation
-router.get('/:challenge_id/', controller.readCompletionsByChallenge);// endpoint to retrieve all completions for a specific challenge
+router.post('/:challenge_id/', jwtMiddleware.verifyToken, controller.validateUser, controller.validateChallenge, controller.completeChallenge);// endpoint to log a completion with middleware for user and challenge validation
+router.get('/:challenge_id/', jwtMiddleware.verifyToken, controller.readCompletionsByChallenge);// endpoint to retrieve all completions for a specific challenge
 
 module.exports = router;

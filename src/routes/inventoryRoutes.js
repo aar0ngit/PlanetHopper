@@ -5,8 +5,9 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/inventoryController');
+const jwtMiddleware = require('../middewares/jwtmiddleware');
 
-router.post('/', controller.addItem);// endpoint to add a new item to a user's collection
-router.get('/:user_id', controller.readInventory);// endpoint to fetch all items owned by a specific user
+router.post('/', jwtMiddleware.verifyToken, controller.addItem);// endpoint to add a new item to a user's collection
+router.get('/:user_id', jwtMiddleware.verifyToken, controller.readInventory);// endpoint to fetch all items owned by a specific user
 
 module.exports = router;

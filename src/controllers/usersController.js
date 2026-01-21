@@ -78,3 +78,77 @@ module.exports.updateUser = (req, res) => {
 
     model.updateUser(data, callback);
 };
+
+module.exports.login = (req, res, next) => {
+
+    const data = {
+        username: req.body.username
+    }
+    
+    const callback = (err, results) => {
+        if (err) {
+            console.error("Error getUserByUsername: ", err)
+            res.status(500).json({ message: "DB Error" })
+        }
+
+        if (results.length == 0) {
+            res.status(404).json({ message: "User not found" })
+        }
+
+        if (results && results.length > 0) {
+            res.locals.hash = results[0].password
+            next()
+        }
+    }
+    userModel.getUserByUsername(data, callback);
+}
+
+module.exports.checkUsernameOrEmailExist = (req, res, next) => {
+
+    const data = {
+        username: req.body.username,
+        email: req.body.email
+    }
+
+    const callback = (error, results) => {
+        if (error) {
+            console.error("Error checkEmailUsername: ", error);
+            res.status(500).json({ message: 'DB Error' });
+        }
+        if (results.length > 0) {
+            res.status(409).json({ message: "Username or email already exists" })
+        }
+
+        else {
+            res.locals.username = data.username;
+            res.locals.email = data.email;
+            next();
+        }
+    }
+
+    userModel.checkEmailUsername(data, callback);
+}
+
+module.exports.register = (req, res, next) => {
+
+    const data = {
+        hashedPassword: res.locals.hash,
+        username: res.locals.username,
+        email: res.locals.email
+    }
+
+    const callback = (err, results) => {
+        if (err) {
+            console.error("Error insertHash: ", err);
+            res.status(500).json({ message: "DB Error" })
+        }
+        if (results.affectedRows == 0) {
+            res.status(401).json({ message: "Hash not inserted into DB"})
+        }
+
+        else {
+            res.status(200).json({ message: `User ${res.locals.username} created successfully.` });
+        }
+    }
+    userModel.insertHash(data, callback);
+}

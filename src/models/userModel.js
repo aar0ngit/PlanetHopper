@@ -35,3 +35,39 @@ module.exports.updateUser = (data, callback) => {
     const SQL = `UPDATE User SET username = ?, points = ? WHERE user_id = ?;`;
     pool.query(SQL, [data.username, data.points, data.user_id], callback);
 };
+
+module.exports.checkEmailUsername = (data, callback) => {
+
+    const MYSQLSTATEMENT = `
+    SELECT * FROM User
+    WHERE username = ? AND email = ?
+    `;
+
+    const VALUES = [data.username, data.email];
+
+    pool.query(MYSQLSTATEMENT, VALUES, callback);
+}
+
+module.exports.getUserByUsername = (data, callback) => {
+
+    const MYSQLSTATEMENT = `
+    SELECT * FROM User
+    WHERE username = ?
+    `;
+
+    const VALUES = [data.username]
+
+    pool.query(MYSQLSTATEMENT, VALUES, callback);
+}
+
+module.exports.insertHash = (data, callback) => {
+    
+    const MYSQLSTATEMENT = `
+    INSERT INTO User (password, email, username)
+    VALUES (?, ?, ?)
+    `;
+
+    const VALUES = [data.hashedPassword, data.email, data.username];
+
+    pool.query(MYSQLSTATEMENT, VALUES, callback);
+}
