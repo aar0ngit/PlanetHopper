@@ -4,32 +4,73 @@
 
 const pool = require('../services/db');
 
-// create a new wellness challenge in the database
+//////////////////////////////////////
+// CHALLENGE CRUD OPERATIONS
+//////////////////////////////////////
+
+// greate a new wellness challenge
 module.exports.insertChallenge = (data, callback) => {
-    const SQL = `INSERT INTO WellnessChallenge (creator_id, description, points) VALUES (?, ?, ?);`;
-    pool.query(SQL, [data.user_id, data.description, data.points], callback);
+  const SQL = `INSERT INTO wellness_challenges (title, description, category, points_value, created_by) 
+               VALUES (?, ?, ?, ?, ?);`;
+  pool.query(SQL, [data.title, data.description, data.category, data.points_value, data.created_by], callback);
 };
 
-// retrieve all available wellness challenges
+// get all wellness challenges
 module.exports.selectAllChallenges = (callback) => {
-    const SQL = `SELECT * FROM WellnessChallenge;`;
-    pool.query(SQL, callback);
+  const SQL = `SELECT wc.*, u.username as creator_name 
+               FROM wellness_challenges wc
+               JOIN users u ON wc.created_by = u.user_id
+               ORDER BY wc.created_at DESC;`;
+  pool.query(SQL, callback);
 };
 
-// find a specific challenge using its unique ID
+// get challenges by category
+module.exports.selectChallengesByCategory = (data, callback) => {
+  const SQL = `SELECT wc.*, u.username as creator_name 
+               FROM wellness_challenges wc
+               JOIN users u ON wc.created_by = u.user_id
+               WHERE wc.category = ?
+               ORDER BY wc.created_at DESC;`;
+  pool.query(SQL, [data.category], callback);
+};
+
+// get a specific challenge by ID
 module.exports.selectChallengeById = (data, callback) => {
-    const SQL = `SELECT * FROM WellnessChallenge WHERE challenge_id = ?;`;
-    pool.query(SQL, [data.challenge_id], callback);
+  const SQL = `SELECT wc.*, u.username as creator_name 
+               FROM wellness_challenges wc
+               JOIN users u ON wc.created_by = u.user_id
+               WHERE wc.challenge_id = ?;`;
+  pool.query(SQL, [data.challenge_id], callback);
 };
 
-// update the description or points of an existing challenge
+// gwet challenges created by specific user
+module.exports.selectChallengesByUser = (data, callback) => {
+  const SQL = `SELECT * FROM wellness_challenges WHERE created_by = ?;`;
+  pool.query(SQL, [data.user_id], callback);
+};
+
+// update a challenge (only by creator)
 module.exports.updateChallenge = (data, callback) => {
-    const SQL = `UPDATE WellnessChallenge SET description = ?, points = ? WHERE challenge_id = ?;`;
-    pool.query(SQL, [data.description, data.points, data.challenge_id], callback);
+  const SQL = `UPDATE wellness_challenges 
+               SET title = ?, description = ?, category = ?, points_value = ? 
+               WHERE challenge_id = ? AND created_by = ?;`;
+  pool.query(SQL, [data.title, data.description, data.category, data.points_value, data.challenge_id, data.created_by], callback);
 };
 
-// remove a challenge from the database by ID
+// delete a challenge (only by creator)
 module.exports.deleteChallenge = (data, callback) => {
-    const SQL = `DELETE FROM WellnessChallenge WHERE challenge_id = ?;`;
-    pool.query(SQL, [data.challenge_id], callback);
+  const SQL = `DELETE FROM wellness_challenges 
+               WHERE challenge_id = ? AND created_by = ?;`;
+  pool.query(SQL, [data.challenge_id, data.created_by], callback);
+};
+
+// search challenges by title
+module.exports.searchChallenges = (data, callback) => {
+  const SQL = `SELECT wc.*, u.username as creator_name 
+               FROM wellness_challenges wc
+               JOIN users u ON wc.created_by = u.user_id
+               WHERE wc.title LIKE ? OR wc.description LIKE ?
+               ORDER BY wc.created_at DESC;`;
+  const searchTerm = `%${data.search}%`;
+  pool.query(SQL, [searchTerm, searchTerm], callback);
 };

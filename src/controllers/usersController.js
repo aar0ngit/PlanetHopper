@@ -3,152 +3,237 @@
 // DIT/FT/1B/08
 
 const model = require('../models/userModel');
+const jwt = require('jsonwebtoken');
 
-module.exports.checkUsernameExists = (req, res, next) => {
-    const data = { username: req.body.username };
-    if (!data.username) return res.status(400).send();
+//////////////////////////////////////
+// AUTHENTICATION
+//////////////////////////////////////
 
-    const callback = (error, results) => {
-        if (error) return res.status(500).send();
-        if (results.length > 0) return res.status(409).send();
-        next();
-    };
+// Register new user
+module.exports.register = (req, res, next) => {
+  const data = {
+    username: req.body.username,
+    email: req.body.email,
+    password_hash: res.locals.hash // From bcrypt middleware
+  };
 
-    model.checkUsername(data, callback);
-};
-
-module.exports.createNewUser = (req, res) => {
-    const data = {
-        username: req.body.username
-    };
-
-    if (!data.username) {
-        return res.status(400).send();
-    }
-
-    const callback = (error, results) => {
-        if (error) return res.status(500).send();
-        res.status(201).json({
-            user_id: results.insertId,
-            username: data.username,
-            points: 0
-        });
-    };
-
-    model.insertUser(data, callback);
-};
-
-module.exports.readAllUsers = (req, res) => {
-    const callback = (error, results) => {
-        if (error) return res.status(500).send();
-        res.status(200).json(results);
-    };
-
-    model.selectAllUsers(callback);
-};
-
-module.exports.readUserById = (req, res) => {
-    const callback = (error, results) => {
-        if (error) return res.status(500).send();
-        if (results.length === 0) return res.status(404).send();
-        res.status(200).json(results[0]);
-    };
-
-    model.selectUserById({ user_id: req.params.user_id }, callback);
-};
-
-module.exports.updateUser = (req, res) => {
-    if (!req.body.username) return res.status(400).send();
-
-    const data = {
-        user_id: req.params.user_id,
-        username: req.body.username,
-        points: req.body.points
-    };
-
-    const callback = (error, results) => {
-        if (error) return res.status(500).send();
-        if (results.affectedRows === 0) return res.status(404).send();
-        res.status(200).json({
-            user_id: data.user_id,
-            username: data.username,
-            points: data.points
-        });
-    };
-
-    model.updateUser(data, callback);
-};
-
-module.exports.login = (req, res, next) => {
-
-    const data = {
-        username: req.body.username
+  const callback = (error, results) => {
+    if (error) {
+      console.error("Error insertUser:", error);
+      return res.status(500).json({ message: "Database error" });
     }
     
-    const callback = (err, results) => {
-        if (err) {
-            console.error("Error getUserByUsername: ", err)
-            res.status(500).json({ message: "DB Error" })
-        }
+    res.locals.userId = results.insertId;
+    res.locals.message = "User registered successfully";
+    next(); // Proceed to generate JWT token
+  };
 
-        if (results.length == 0) {
-            res.status(404).json({ message: "User not found" })
-        }
+  model.insertUser(data, callback);
+};
 
-        if (results && results.length > 0) {
-            res.locals.hash = results[0].password
-            next()
-        }
+// Login user
+module.exports.login = (req, res, next) => {
+  const data = {
+    username: req.body.username
+  };
+
+  const callback = (error, results) => {
+    if (error) {
+      console.error("Error getUserByUsername:", error);
+      return res.status(500).json({ message: "Database error" });
     }
-    userModel.getUserByUsername(data, callback);
-}
 
+    if (results.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Store hash and userId for next middleware
+    res.locals.hash = results[0].password_hash;
+    res.locals.userId = results[0].user_id;
+    res.locals.message = "Login successful";
+    next(); // Proceed to comparePassword
+  };
+
+  model.getUserByUsername(data, callback);
+};
+
+// Check if username or email exists (for registration)
 module.exports.checkUsernameOrEmailExist = (req, res, next) => {
+  if (!req.body.username || !req.body.email) {
+    return res.status(400).json({ message: "Username and email required" });
+  }
 
-    const data = {
-        username: req.body.username,
-        email: req.body.email
+  const data = {
+    username: req.body.username,
+    email: req.body.email
+  };
+
+  // Check username
+  model.checkUsername(data, (error, results) => {
+    if (error) {
+      console.error("Error checkUsername:", error);
+      return res.status(500).json({ message: "Database error" });
     }
 
-    const callback = (error, results) => {
-        if (error) {
-            console.error("Error checkEmailUsername: ", error);
-            res.status(500).json({ message: 'DB Error' });
-        }
-        if (results.length > 0) {
-            res.status(409).json({ message: "Username or email already exists" })
-        }
-
-        else {
-            res.locals.username = data.username;
-            res.locals.email = data.email;
-            next();
-        }
+    if (results.length > 0) {
+      return res.status(409).json({ message: "Username already exists" });
     }
 
-    userModel.checkEmailUsername(data, callback);
-}
+    // Check email
+    model.checkEmail(data, (error, results) => {
+      if (error) {
+        console.error("Error checkEmail:", error);
+        return res.status(500).json({ message: "Database error" });
+      }
 
-module.exports.register = (req, res, next) => {
+      if (results.length > 0) {
+        return res.status(409).json({ message: "Email already exists" });
+      }
 
-    const data = {
-        hashedPassword: res.locals.hash,
-        username: res.locals.username,
-        email: res.locals.email
+      next(); // Proceed to hash password
+    });
+  });
+};
+
+//////////////////////////////////////
+// USER PROFILE
+//////////////////////////////////////
+
+// Get user profile (protected)
+module.exports.getUserProfile = (req, res) => {
+  const data = {
+    user_id: res.locals.userId // From JWT token
+  };
+
+  const callback = (error, results) => {
+    if (error) {
+      console.error("Error selectUserById:", error);
+      return res.status(500).json({ message: "Database error" });
     }
 
-    const callback = (err, results) => {
-        if (err) {
-            console.error("Error insertHash: ", err);
-            res.status(500).json({ message: "DB Error" })
-        }
-        if (results.affectedRows == 0) {
-            res.status(401).json({ message: "Hash not inserted into DB"})
-        }
-
-        else {
-            res.status(200).json({ message: `User ${res.locals.username} created successfully.` });
-        }
+    if (results.length === 0) {
+      return res.status(404).json({ message: "User not found" });
     }
-    userModel.insertHash(data, callback);
-}
+
+    res.status(200).json(results[0]);
+  };
+
+  model.selectUserById(data, callback);
+};
+
+// Get user by ID (admin/public)
+module.exports.readUserById = (req, res) => {
+  const data = {
+    user_id: req.params.user_id
+  };
+
+  const callback = (error, results) => {
+    if (error) {
+      console.error("Error selectUserById:", error);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(results[0]);
+  };
+
+  model.selectUserById(data, callback);
+};
+
+// Get all users (admin)
+module.exports.readAllUsers = (req, res) => {
+  const callback = (error, results) => {
+    if (error) {
+      console.error("Error selectAllUsers:", error);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    res.status(200).json(results);
+  };
+
+  model.selectAllUsers(callback);
+};
+
+//////////////////////////////////////
+// POINTS MANAGEMENT
+//////////////////////////////////////
+
+// Get user's points balance
+module.exports.getUserPoints = (req, res) => {
+  const data = {
+    user_id: res.locals.userId
+  };
+
+  const callback = (error, results) => {
+    if (error) {
+      console.error("Error getUserPoints:", error);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(results[0]);
+  };
+
+  model.getUserPoints(data, callback);
+};
+
+// Convert wellness points to combat points (10:1 ratio)
+module.exports.convertPoints = (req, res) => {
+  const wellness_amount = parseInt(req.body.wellness_amount);
+
+  // Validation
+  if (!wellness_amount || wellness_amount < 10) {
+    return res.status(400).json({ message: "Minimum 10 wellness points required" });
+  }
+
+  if (wellness_amount % 10 !== 0) {
+    return res.status(400).json({ message: "Wellness amount must be multiple of 10" });
+  }
+
+  const data = {
+    user_id: res.locals.userId,
+    wellness_amount: wellness_amount
+  };
+
+  // First check if user has enough wellness points
+  model.getUserPoints({ user_id: res.locals.userId }, (error, results) => {
+    if (error) {
+      console.error("Error getUserPoints:", error);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    const currentWellness = results[0].wellness_points;
+
+    if (currentWellness < wellness_amount) {
+      return res.status(400).json({ 
+        message: "Insufficient wellness points",
+        current: currentWellness,
+        required: wellness_amount
+      });
+    }
+
+    // Perform conversion
+    model.convertPoints(data, (error, results) => {
+      if (error) {
+        console.error("Error convertPoints:", error);
+        return res.status(500).json({ message: "Database error" });
+      }
+
+      const combat_received = Math.floor(wellness_amount / 10);
+
+      res.status(200).json({
+        message: "Conversion successful",
+        wellness_spent: wellness_amount,
+        combat_received: combat_received,
+        new_wellness: currentWellness - wellness_amount,
+        new_combat: results[0].combat_points + combat_received
+      });
+    });
+  });
+};

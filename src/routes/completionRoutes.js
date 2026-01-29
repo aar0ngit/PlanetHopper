@@ -5,9 +5,40 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/completionController');
-const jwtMiddleware = require('../middewares/jwtmiddleware');
+const jwtMiddleware = require('../middlewares/jwtMiddleware');
 
-router.post('/:challenge_id/', jwtMiddleware.verifyToken, controller.validateUser, controller.validateChallenge, controller.completeChallenge);// endpoint to log a completion with middleware for user and challenge validation
-router.get('/:challenge_id/', jwtMiddleware.verifyToken, controller.readCompletionsByChallenge);// endpoint to retrieve all completions for a specific challenge
+//////////////////////////////////////
+// PROTECTED ROUTES
+//////////////////////////////////////
+
+// complete a challenge (middleware chain)
+router.post('/challenges/:id/complete', 
+  jwtMiddleware.verifyToken,
+  controller.validateChallengeExists,
+  controller.checkAlreadyCompleted,
+  controller.insertCompletionRecord,
+  controller.awardWellnessPoints,
+  controller.sendCompletionResponse
+);
+
+// get my completion history
+router.get('/completions/me', 
+  jwtMiddleware.verifyToken, 
+  controller.getMyCompletions
+);
+
+//////////////////////////////////////
+// PUBLIC ROUTES
+//////////////////////////////////////
+
+// get completions for a specific challenge
+router.get('/challenges/:challenge_id/completions', 
+  controller.getCompletionsByChallenge
+);
+
+// get completion count for challenge
+router.get('/challenges/:challenge_id/completions/count', 
+  controller.getCompletionCount
+);
 
 module.exports = router;
