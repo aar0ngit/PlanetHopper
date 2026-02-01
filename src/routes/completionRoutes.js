@@ -37,7 +37,7 @@ router.get('/challenges/:challenge_id/completions',
 );
 
 // get completion count for challenge
-router.get('/challenges/:challenge_id/completions/count', 
+router.get('/challenges/:challenge_id/completions/count',
   controller.getCompletionCount
 );
 

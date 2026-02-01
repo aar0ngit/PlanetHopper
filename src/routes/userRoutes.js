@@ -45,11 +45,6 @@ router.get('/points',
   controller.getUserPoints
 );
 
-// convert wellness points to combat points
-router.post('/convert', 
-  jwtMiddleware.verifyToken, 
-  controller.convertPoints
-);
 
 // get all users (admin)
 router.get('/', 

@@ -65,43 +65,18 @@ module.exports.selectAllUsers = (callback) => {
 // POINTS MANAGEMENT
 //////////////////////////////////////
 
-// update wellness points (after completing challenge)
-module.exports.addWellnessPoints = (data, callback) => {
-  const SQL = `UPDATE users SET wellness_points = wellness_points + ? WHERE user_id = ?;`;
+module.exports.addPoints = (data, callback) => {
+  const SQL = `UPDATE users SET points = points + ? WHERE user_id = ?;`;
   pool.query(SQL, [data.points, data.user_id], callback);
 };
 
-// update combat points (after conversion)
-module.exports.addCombatPoints = (data, callback) => {
-  const SQL = `UPDATE users SET combat_points = combat_points + ? WHERE user_id = ?;`;
+
+module.exports.deductPoints = (data, callback) => {
+  const SQL = `UPDATE users SET points = points - ? WHERE user_id = ?;`;
   pool.query(SQL, [data.points, data.user_id], callback);
 };
 
-// deduct wellness points (for conversion)
-module.exports.deductWellnessPoints = (data, callback) => {
-  const SQL = `UPDATE users SET wellness_points = wellness_points - ? WHERE user_id = ?;`;
-  pool.query(SQL, [data.points, data.user_id], callback);
-};
-
-// deduct combat points (for boss fights)
-module.exports.deductCombatPoints = (data, callback) => {
-  const SQL = `UPDATE users SET combat_points = combat_points - ? WHERE user_id = ?;`;
-  pool.query(SQL, [data.points, data.user_id], callback);
-};
-
-// convert wellness points to combat points (10:1 ratio)
-module.exports.convertPoints = (data, callback) => {
-  const SQL = `UPDATE users 
-               SET wellness_points = wellness_points - ?, 
-                   combat_points = combat_points + ? 
-               WHERE user_id = ?;`;
-  const wellnessToSpend = data.wellness_amount;
-  const combatToReceive = Math.floor(wellnessToSpend / 10);
-  pool.query(SQL, [wellnessToSpend, combatToReceive, data.user_id], callback);
-};
-
-// get user's current points (both wellness and combat)
 module.exports.getUserPoints = (data, callback) => {
-  const SQL = `SELECT wellness_points, combat_points FROM users WHERE user_id = ?;`;
+  const SQL = `SELECT points FROM users WHERE user_id = ?;`;
   pool.query(SQL, [data.user_id], callback);
 };
