@@ -5,9 +5,9 @@
 const completionModel = require('../models/completionModel');
 const userModel = require('../models/userModel');
 
-//////////////////////////////////////
+
 // MIDDLEWARE CHAIN FOR COMPLETING CHALLENGE
-//////////////////////////////////////
+
 
 //validate challenge exists
 module.exports.validateChallengeExists = (req, res, next) => {
@@ -101,9 +101,7 @@ module.exports.sendCompletionResponse = (req, res) => {
   });
 };
 
-//////////////////////////////////////
 // GET COMPLETIONS
-//////////////////////////////////////
 
 // get user's completion history (protected)
 module.exports.getMyCompletions = (req, res) => {

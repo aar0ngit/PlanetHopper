@@ -4,9 +4,7 @@
 
 const pool = require('../services/db');
 
-//////////////////////////////////////
 // CHALLENGE CRUD OPERATIONS
-//////////////////////////////////////
 
 // greate a new wellness challenge
 module.exports.insertChallenge = (data, callback) => {

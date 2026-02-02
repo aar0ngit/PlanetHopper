@@ -7,9 +7,7 @@ const router = express.Router();
 const controller = require('../controllers/completionController');
 const jwtMiddleware = require('../middlewares/jwtMiddleware');
 
-//////////////////////////////////////
 // PROTECTED ROUTES
-//////////////////////////////////////
 
 // complete a challenge (middleware chain)
 router.post('/challenges/:id/complete', 
@@ -27,9 +25,7 @@ router.get('/completions/me',
   controller.getMyCompletions
 );
 
-//////////////////////////////////////
 // PUBLIC ROUTES
-//////////////////////////////////////
 
 // get completions for a specific challenge
 router.get('/challenges/:challenge_id/completions', 

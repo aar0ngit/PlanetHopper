@@ -4,9 +4,9 @@
 
 const model = require('../models/challengeModel');
 
-//////////////////////////////////////
+
 // CHALLENGE CRUD
-//////////////////////////////////////
+
 
 // create new challenge (protected)
 module.exports.createChallenge = (req, res) => {

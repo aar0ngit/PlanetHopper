@@ -8,17 +8,17 @@ const controller = require('../controllers/usersController');
 const jwtMiddleware = require('../middlewares/jwtMiddleware');
 const bcryptMiddleware = require('../middlewares/bcryptMiddleware');
 
-//////////////////////////////////////
 // PUBLIC ROUTES (No JWT)
-//////////////////////////////////////
 
 // register new user
-router.post('/register', 
-  controller.checkUsernameOrEmailExist,
-  bcryptMiddleware.hashPassword,
-  controller.register,
-  jwtMiddleware.generateToken,
-  jwtMiddleware.sendToken
+router.post('/register',
+    controller.validateRegistrationInput,
+    controller.checkUsernameExists,
+    controller.checkEmailExists,
+    bcryptMiddleware.hashPassword,
+    controller.register,
+    jwtMiddleware.generateToken,
+    jwtMiddleware.sendToken
 );
 
 // login user
@@ -29,9 +29,7 @@ router.post('/login',
   jwtMiddleware.sendToken
 );
 
-//////////////////////////////////////
 // PROTECTED ROUTES (JWT Required)
-//////////////////////////////////////
 
 // get own profile
 router.get('/profile', 

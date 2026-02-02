@@ -5,16 +5,14 @@
 const model = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 
-//////////////////////////////////////
 // AUTHENTICATION
-//////////////////////////////////////
 
-// Register new user
+// register new user
 module.exports.register = (req, res, next) => {
   const data = {
     username: req.body.username,
     email: req.body.email,
-    password_hash: res.locals.hash // From bcrypt middleware
+    password_hash: res.locals.hash // from bcrypt
   };
 
   const callback = (error, results) => {
@@ -25,13 +23,13 @@ module.exports.register = (req, res, next) => {
     
     res.locals.userId = results.insertId;
     res.locals.message = "User registered successfully";
-    next(); // Proceed to generate JWT token
+    next(); // proceed to generate JWT token
   };
 
   model.insertUser(data, callback);
 };
 
-// Login user
+// login user
 module.exports.login = (req, res, next) => {
   const data = {
     username: req.body.username
@@ -47,7 +45,7 @@ module.exports.login = (req, res, next) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Store hash and userId for next middleware
+    // store hash and userId for next middleware
     res.locals.hash = results[0].password_hash;
     res.locals.userId = results[0].user_id;
     res.locals.message = "Login successful";
@@ -57,47 +55,52 @@ module.exports.login = (req, res, next) => {
   model.getUserByUsername(data, callback);
 };
 
-// Check if username or email exists (for registration)
-module.exports.checkUsernameOrEmailExist = (req, res, next) => {
-  if (!req.body.username || !req.body.email) {
-    return res.status(400).json({ message: "Username and email required" });
-  }
-
-  const data = {
-    username: req.body.username,
-    email: req.body.email
-  };
-
-  // Check username
-  model.checkUsername(data, (error, results) => {
-    if (error) {
-      console.error("Error checkUsername:", error);
-      return res.status(500).json({ message: "Database error" });
+// validate registration input
+module.exports.validateRegistrationInput = (req, res, next) => {
+    if (!req.body.username || !req.body.email) {
+        return res.status(400).json({ message: "Username and email required" });
     }
-
-    if (results.length > 0) {
-      return res.status(409).json({ message: "Username already exists" });
-    }
-
-    // Check email
-    model.checkEmail(data, (error, results) => {
-      if (error) {
-        console.error("Error checkEmail:", error);
-        return res.status(500).json({ message: "Database error" });
-      }
-
-      if (results.length > 0) {
-        return res.status(409).json({ message: "Email already exists" });
-      }
-
-      next(); // Proceed to hash password
-    });
-  });
+    next();
 };
 
-//////////////////////////////////////
+// check if username exists
+module.exports.checkUsernameExists = (req, res, next) => {
+    const data = { username: req.body.username };
+
+    const callback = (error, results) => {
+        if (error) {
+            console.error("Error checkUsername:", error);
+            return res.status(500).json({ message: "Database error" });
+        }
+        if (results.length > 0) {
+            return res.status(409).json({ message: "Username already exists" });
+        }
+        next();
+    };
+
+    model.checkUsername(data, callback);
+};
+
+// check if email exists
+module.exports.checkEmailExists = (req, res, next) => {
+    const data = { email: req.body.email };
+
+    const callback = (error, results) => {
+        if (error) {
+            console.error("Error checkEmail:", error);
+            return res.status(500).json({ message: "Database error" });
+        }
+        if (results.length > 0) {
+            return res.status(409).json({ message: "Email already exists" });
+        }
+        next();
+    };
+
+    model.checkEmail(data, callback);
+};
+
+
 // USER PROFILE
-//////////////////////////////////////
 
 // Get user profile (protected)
 module.exports.getUserProfile = (req, res) => {
@@ -157,9 +160,7 @@ module.exports.readAllUsers = (req, res) => {
   model.selectAllUsers(callback);
 };
 
-//////////////////////////////////////
 // POINTS MANAGEMENT
-//////////////////////////////////////
 
 // Get user's points balance
 module.exports.getUserPoints = (req, res) => {

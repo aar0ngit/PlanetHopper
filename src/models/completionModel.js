@@ -4,9 +4,7 @@
 
 const pool = require('../services/db');
 
-//////////////////////////////////////
 // VALIDATION FUNCTIONS
-//////////////////////////////////////
 
 // check if a user exists by their ID
 module.exports.checkUser = (data, callback) => {
@@ -27,9 +25,7 @@ module.exports.checkExistingCompletion = (data, callback) => {
   pool.query(SQL, [data.user_id, data.challenge_id], callback);
 };
 
-//////////////////////////////////////
 // COMPLETION OPERATIONS
-//////////////////////////////////////
 
 // record a new challenge completion for a user
 module.exports.insertCompletion = (data, callback) => {
@@ -78,9 +74,7 @@ module.exports.getUserCompletionCount = (data, callback) => {
   pool.query(SQL, [data.user_id], callback);
 };
 
-//////////////////////////////////////
 // LEADERBOARD / STATS
-//////////////////////////////////////
 
 // get top users by completion count
 module.exports.getTopUsers = (callback) => {
