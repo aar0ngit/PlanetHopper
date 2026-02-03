@@ -2,58 +2,116 @@
 // Aaron Tan
 // DIT/FT/1B/08
 
-const pool = require('../services/db');
+const model = require('../models/inventoryModel');
 
+// get user's inventory
+module.exports.getUserInventory = (req, res) => {
+    const data = {
+        user_id: req.params.user_id
+    };
 
-// INVENTORY MANAGEMENT
+    const callback = (error, results) => {
+        if (error) {
+            console.error("Error getInventoryByUserId:", error);
+            return res.status(500).json({ message: "Database error" });
+        }
+        res.status(200).json(results);
+    };
 
-
-// get users inventory with item details
-module.exports.getInventoryByUserId = (data, callback) => {
-    const SQL = `SELECT 
-                    i.inventory_id,
-                    i.user_id,
-                    i.item_id,
-                    i.quantity,
-                    i.acquired_at,
-                    s.name,
-                    s.description,
-                    s.cost,
-                    s.effect_type,
-                    s.effect_duration,
-                    s.image_url
-                 FROM inventory i
-                 JOIN shop_items s ON i.item_id = s.item_id
-                 WHERE i.user_id = ?
-                 ORDER BY i.acquired_at DESC;`;
-    pool.query(SQL, [data.user_id], callback);
+    model.getInventoryByUserId(data, callback);
 };
 
-// check if user owns a specific item
-module.exports.checkItemOwnership = (data, callback) => {
-    const SQL = `SELECT quantity FROM inventory 
-                 WHERE user_id = ? AND item_id = ?;`;
-    pool.query(SQL, [data.user_id, data.item_id], callback);
+// validate use input
+module.exports.validateUseInput = (req, res, next) => {
+    const { item_id } = req.body;
+
+    if (!item_id) {
+        return res.status(400).json({ message: "item_id is required" });
+    }
+
+    next();
 };
 
-// use item (decrease quantity by 1)
-module.exports.useItem = (data, callback) => {
-    const SQL = `UPDATE inventory 
-                 SET quantity = quantity - 1 
-                 WHERE user_id = ? AND item_id = ? AND quantity > 0;`;
-    pool.query(SQL, [data.user_id, data.item_id], callback);
+// check item ownership
+module.exports.checkOwnership = (req, res, next) => {
+    const data = {
+        user_id: res.locals.userId,
+        item_id: req.body.item_id
+    };
+
+    const callback = (error, results) => {
+        if (error) {
+            console.error("Error checkItemOwnership:", error);
+            return res.status(500).json({ message: "Database error" });
+        }
+
+        if (results.length === 0 || results[0].quantity < 1) {
+            return res.status(400).json({ message: "Item not owned or out of stock" });
+        }
+
+        next();
+    };
+
+    model.checkItemOwnership(data, callback);
 };
 
-// delete item if quantity reaches 0
-module.exports.deleteIfEmpty = (data, callback) => {
-    const SQL = `DELETE FROM inventory 
-                 WHERE user_id = ? AND item_id = ? AND quantity = 0;`;
-    pool.query(SQL, [data.user_id, data.item_id], callback);
+// decrease quantity
+module.exports.decreaseQuantity = (req, res, next) => {
+    const data = {
+        user_id: res.locals.userId,
+        item_id: req.body.item_id
+    };
+
+    const callback = (error, results) => {
+        if (error) {
+            console.error("Error useItem:", error);
+            return res.status(500).json({ message: "Failed to use item" });
+        }
+
+        next();
+    };
+
+    model.useItem(data, callback);
 };
 
-// get remaining quantity after use
-module.exports.getRemainingQuantity = (data, callback) => {
-    const SQL = `SELECT quantity FROM inventory 
-                 WHERE user_id = ? AND item_id = ?;`;
-    pool.query(SQL, [data.user_id, data.item_id], callback);
+// cleanup empty items
+module.exports.cleanupEmptyItems = (req, res, next) => {
+    const data = {
+        user_id: res.locals.userId,
+        item_id: req.body.item_id
+    };
+
+    const callback = (error, results) => {
+        if (error) {
+            // Log error but don't fail the request since quantity was already decreased
+            console.error("Error deleteIfEmpty:", error);
+        }
+        next();
+    };
+
+    model.deleteIfEmpty(data, callback);
+};
+
+// send response
+module.exports.completeUse = (req, res) => {
+    const data = {
+        user_id: res.locals.userId,
+        item_id: req.body.item_id
+    };
+
+    const callback = (error, results) => {
+        if (error) {
+            console.error("Error getRemainingQuantity:", error);
+            return res.status(500).json({ message: "Database error" });
+        }
+
+        const remaining = results.length > 0 ? results[0].quantity : 0;
+
+        res.status(200).json({
+            message: "Item used successfully",
+            remaining_quantity: remaining
+        });
+    };
+
+    model.getRemainingQuantity(data, callback);
 };

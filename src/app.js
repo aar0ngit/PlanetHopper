@@ -7,9 +7,13 @@ const app = express();
 
 // Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
+
+
 
 // Routes
 const mainRoutes = require('./routes/mainRoutes');
-app.use('/', mainRoutes);
+app.use('/api', mainRoutes);
 
 module.exports = app;

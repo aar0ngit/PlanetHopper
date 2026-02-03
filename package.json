@@ -1,7 +1,7 @@
 {
   "name": "bed-ca1-aar0ngit",
   "version": "1.0.0",
-  "description": "You are required to build your folder structures for your project.",
+  "description": "Planet Hopper - A Wellness Challenge & Galactic Runner Game",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

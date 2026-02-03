@@ -5,10 +5,6 @@
 const completionModel = require('../models/completionModel');
 const userModel = require('../models/userModel');
 
-
-// MIDDLEWARE CHAIN FOR COMPLETING CHALLENGE
-
-
 //validate challenge exists
 module.exports.validateChallengeExists = (req, res, next) => {
   const challenge_id = parseInt(req.params.id);
@@ -58,11 +54,17 @@ module.exports.insertCompletionRecord = (req, res, next) => {
   const user_id = res.locals.userId;
   const challenge_id = res.locals.challenge_id;
   const points_earned = res.locals.challenge.points_value;
+  let { notes, completion_date } = req.body;
+
+  // final check for completion_date
+  if (!completion_date) {
+    completion_date = new Date().toISOString().split('T')[0];
+  }
 
   const callback = (error, results) => {
     if (error) {
-      console.error("Error insertCompletion:", error);
-      return res.status(500).json({ message: "Database error" });
+      console.error("Error in insertCompletionRecord:", error);
+      return res.status(500).json({ message: "Database error", error: error.message });
     }
 
     // store completion ID for response
@@ -71,7 +73,7 @@ module.exports.insertCompletionRecord = (req, res, next) => {
     next();
   };
 
-  completionModel.insertCompletion({ user_id, challenge_id, points_earned }, callback);
+  completionModel.insertCompletion({ user_id, challenge_id, notes, completion_date, points_earned }, callback);
 };
 
 // award wellness points to user
@@ -88,7 +90,7 @@ module.exports.awardWellnessPoints = (req, res, next) => {
     next();
   };
 
-  userModel.addWellnessPoints({ user_id, points }, callback);
+  userModel.addPoints({ user_id, points }, callback);
 };
 
 // send success response

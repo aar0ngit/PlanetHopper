@@ -5,20 +5,20 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/usersController');
-const jwtMiddleware = require('../middlewares/jwtMiddleware');
+const jwtMiddleware = require('../middlewares/jwtmiddleware');
 const bcryptMiddleware = require('../middlewares/bcryptMiddleware');
 
 // PUBLIC ROUTES (No JWT)
 
 // register new user
 router.post('/register',
-    controller.validateRegistrationInput,
-    controller.checkUsernameExists,
-    controller.checkEmailExists,
-    bcryptMiddleware.hashPassword,
-    controller.register,
-    jwtMiddleware.generateToken,
-    jwtMiddleware.sendToken
+  controller.validateRegistrationInput,
+  controller.checkUsernameExists,
+  controller.checkEmailExists,
+  bcryptMiddleware.hashPassword,
+  controller.register,
+  jwtMiddleware.generateToken,
+  jwtMiddleware.sendToken
 );
 
 // login user
@@ -32,27 +32,27 @@ router.post('/login',
 // PROTECTED ROUTES (JWT Required)
 
 // get own profile
-router.get('/profile', 
-  jwtMiddleware.verifyToken, 
+router.get('/profile',
+  jwtMiddleware.verifyToken,
   controller.getUserProfile
 );
 
 // get own points balance
-router.get('/points', 
-  jwtMiddleware.verifyToken, 
+router.get('/points',
+  jwtMiddleware.verifyToken,
   controller.getUserPoints
 );
 
 
 // get all users (admin)
-router.get('/', 
-  jwtMiddleware.verifyToken, 
+router.get('/',
+  jwtMiddleware.verifyToken,
   controller.readAllUsers
 );
 
 // get specific user by ID
-router.get('/:user_id', 
-  jwtMiddleware.verifyToken, 
+router.get('/:user_id',
+  jwtMiddleware.verifyToken,
   controller.readUserById
 );
 

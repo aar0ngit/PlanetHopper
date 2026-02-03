@@ -19,7 +19,7 @@ module.exports.getInventoryByUserId = (data, callback) => {
                     s.cost,
                     s.effect_type,
                     s.effect_duration,
-                    s.image_url
+                    s.icon_class
                  FROM inventory i
                  JOIN shop_items s ON i.item_id = s.item_id
                  WHERE i.user_id = ?

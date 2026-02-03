@@ -5,18 +5,18 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/inventoryController');
-const jwtMiddleware = require('../middlewares/jwtMiddleware');
+const jwtMiddleware = require('../middlewares/jwtmiddleware');
 
 // PROTECTED ROUTES (JWT Required)
 
 // get user's inventory
-router.get('/:user_id', 
-    jwtMiddleware.verifyToken, 
+router.get('/:user_id',
+    jwtMiddleware.verifyToken,
     controller.getUserInventory
 );
 
-// use a consumable item - middleware chain (no nested callbacks)
-router.post('/use', 
+// use a consumable item
+router.post('/use',
     jwtMiddleware.verifyToken,
     controller.validateUseInput,
     controller.checkOwnership,

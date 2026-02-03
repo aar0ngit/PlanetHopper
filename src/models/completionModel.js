@@ -29,9 +29,9 @@ module.exports.checkExistingCompletion = (data, callback) => {
 
 // record a new challenge completion for a user
 module.exports.insertCompletion = (data, callback) => {
-  const SQL = `INSERT INTO challenge_completions (challenge_id, user_id, points_earned) 
-               VALUES (?, ?, ?);`;
-  pool.query(SQL, [data.challenge_id, data.user_id, data.points_earned], callback);
+  const SQL = `INSERT INTO challenge_completions (challenge_id, user_id, notes, completion_date, points_earned) 
+               VALUES (?, ?, ?, ?, ?);`;
+  pool.query(SQL, [data.challenge_id, data.user_id, data.notes, data.completion_date, data.points_earned], callback);
 };
 
 // get all completions by a specific user (their history)

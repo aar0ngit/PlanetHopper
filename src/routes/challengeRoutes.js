@@ -5,11 +5,9 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/challengeController');
-const jwtMiddleware = require('../middlewares/jwtMiddleware');
+const jwtMiddleware = require('../middlewares/jwtmiddleware');
 
-//////////////////////////////////////
 // PUBLIC ROUTES
-//////////////////////////////////////
 
 // get all challenges
 router.get('/', controller.getAllChallenges);
@@ -23,25 +21,23 @@ router.get('/category/:category', controller.getChallengesByCategory);
 // get specific challenge
 router.get('/:id', controller.getChallengeById);
 
-//////////////////////////////////////
 // PROTECTED ROUTES
-//////////////////////////////////////
 
 // create new challenge
-router.post('/', 
-  jwtMiddleware.verifyToken, 
+router.post('/',
+  jwtMiddleware.verifyToken,
   controller.createChallenge
 );
 
 // get my created challenges
-router.get('/user/me', 
-  jwtMiddleware.verifyToken, 
+router.get('/user/me',
+  jwtMiddleware.verifyToken,
   controller.getMyChallenges
 );
 
 // delete challenge (only creator)
-router.delete('/:id', 
-  jwtMiddleware.verifyToken, 
+router.delete('/:id',
+  jwtMiddleware.verifyToken,
   controller.deleteChallenge
 );
 

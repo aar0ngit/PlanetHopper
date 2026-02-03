@@ -7,6 +7,8 @@ const jwt = require('jsonwebtoken');
 
 // AUTHENTICATION
 
+const planetModel = require('../models/planetModel'); // Add import
+
 // register new user
 module.exports.register = (req, res, next) => {
   const data = {
@@ -20,10 +22,15 @@ module.exports.register = (req, res, next) => {
       console.error("Error insertUser:", error);
       return res.status(500).json({ message: "Database error" });
     }
-    
+
     res.locals.userId = results.insertId;
     res.locals.message = "User registered successfully";
-    next(); // proceed to generate JWT token
+
+    // unlock level 1 for everyone
+    planetModel.unlockNextPlanet({ user_id: results.insertId, next_planet_id: 1 }, (err) => {
+      if (err) console.error("Error unlocking planet 1:", err);
+      next();
+    });
   };
 
   model.insertUser(data, callback);
@@ -57,52 +64,52 @@ module.exports.login = (req, res, next) => {
 
 // validate registration input
 module.exports.validateRegistrationInput = (req, res, next) => {
-    if (!req.body.username || !req.body.email) {
-        return res.status(400).json({ message: "Username and email required" });
-    }
-    next();
+  if (!req.body.username || !req.body.email) {
+    return res.status(400).json({ message: "Username and email required" });
+  }
+  next();
 };
 
 // check if username exists
 module.exports.checkUsernameExists = (req, res, next) => {
-    const data = { username: req.body.username };
+  const data = { username: req.body.username };
 
-    const callback = (error, results) => {
-        if (error) {
-            console.error("Error checkUsername:", error);
-            return res.status(500).json({ message: "Database error" });
-        }
-        if (results.length > 0) {
-            return res.status(409).json({ message: "Username already exists" });
-        }
-        next();
-    };
+  const callback = (error, results) => {
+    if (error) {
+      console.error("Error checkUsername:", error);
+      return res.status(500).json({ message: "Database error" });
+    }
+    if (results.length > 0) {
+      return res.status(409).json({ message: "Username already exists" });
+    }
+    next();
+  };
 
-    model.checkUsername(data, callback);
+  model.checkUsername(data, callback);
 };
 
 // check if email exists
 module.exports.checkEmailExists = (req, res, next) => {
-    const data = { email: req.body.email };
+  const data = { email: req.body.email };
 
-    const callback = (error, results) => {
-        if (error) {
-            console.error("Error checkEmail:", error);
-            return res.status(500).json({ message: "Database error" });
-        }
-        if (results.length > 0) {
-            return res.status(409).json({ message: "Email already exists" });
-        }
-        next();
-    };
+  const callback = (error, results) => {
+    if (error) {
+      console.error("Error checkEmail:", error);
+      return res.status(500).json({ message: "Database error" });
+    }
+    if (results.length > 0) {
+      return res.status(409).json({ message: "Email already exists" });
+    }
+    next();
+  };
 
-    model.checkEmail(data, callback);
+  model.checkEmail(data, callback);
 };
 
 
 // USER PROFILE
 
-// Get user profile (protected)
+// get user profile (protected)
 module.exports.getUserProfile = (req, res) => {
   const data = {
     user_id: res.locals.userId // From JWT token
@@ -124,7 +131,7 @@ module.exports.getUserProfile = (req, res) => {
   model.selectUserById(data, callback);
 };
 
-// Get user by ID (admin/public)
+// get user by ID
 module.exports.readUserById = (req, res) => {
   const data = {
     user_id: req.params.user_id
@@ -146,7 +153,7 @@ module.exports.readUserById = (req, res) => {
   model.selectUserById(data, callback);
 };
 
-// Get all users (admin)
+// get all users
 module.exports.readAllUsers = (req, res) => {
   const callback = (error, results) => {
     if (error) {
@@ -162,7 +169,7 @@ module.exports.readAllUsers = (req, res) => {
 
 // POINTS MANAGEMENT
 
-// Get user's points balance
+// get user's points balance
 module.exports.getUserPoints = (req, res) => {
   const data = {
     user_id: res.locals.userId

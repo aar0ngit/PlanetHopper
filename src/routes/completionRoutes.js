@@ -5,12 +5,13 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/completionController');
-const jwtMiddleware = require('../middlewares/jwtMiddleware');
+const jwtMiddleware = require('../middlewares/jwtmiddleware');
 
 // PROTECTED ROUTES
 
-// complete a challenge (middleware chain)
-router.post('/challenges/:id/complete', 
+// complete a challenge
+// POST /api/completion/:id
+router.post('/:id',
   jwtMiddleware.verifyToken,
   controller.validateChallengeExists,
   controller.checkAlreadyCompleted,
@@ -20,20 +21,23 @@ router.post('/challenges/:id/complete',
 );
 
 // get my completion history
-router.get('/completions/me', 
-  jwtMiddleware.verifyToken, 
+// GET /api/completion/me
+router.get('/me',
+  jwtMiddleware.verifyToken,
   controller.getMyCompletions
 );
 
 // PUBLIC ROUTES
 
 // get completions for a specific challenge
-router.get('/challenges/:challenge_id/completions', 
+// GET /api/completion/:challenge_id
+router.get('/:challenge_id',
   controller.getCompletionsByChallenge
 );
 
 // get completion count for challenge
-router.get('/challenges/:challenge_id/completions/count',
+// GET /api/completion/:challenge_id/count
+router.get('/:challenge_id/count',
   controller.getCompletionCount
 );
 
