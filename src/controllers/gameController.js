@@ -3,6 +3,7 @@
 // DIT/FT/1B/08
 
 const planetModel = require('../models/planetModel');
+const userModel = require('../models/userModel');
 
 // START GAME
 
@@ -137,6 +138,38 @@ module.exports.unlockIfAvailable = (req, res, next) => {
     }
 };
 
+// reward Points
+module.exports.rewardCompletionPoints = (req, res, next) => {
+    const planet_id = parseInt(res.locals.planetId);
+
+    // map for each planet points
+    const pointsMap = {
+        1: 20,
+        2: 40,
+        3: 60,
+        4: 80,
+        5: 100
+    };
+
+    const points = pointsMap[planet_id] || 25; // 25 point defualt
+    res.locals.pointsEarned = points;
+
+    const data = {
+        user_id: res.locals.userId,
+        points: points
+    };
+
+    const callback = (error) => {
+        if (error) {
+            console.error("Error adding points:", error);
+            // lgog error
+        }
+        next();
+    };
+
+    userModel.addPoints(data, callback);
+};
+
 // send Complete Response
 module.exports.sendCompleteResponse = (req, res) => {
     const { time_elapsed } = req.body;
@@ -145,6 +178,7 @@ module.exports.sendCompleteResponse = (req, res) => {
         message: res.locals.gameCompleted ? "Congratulations! You completed the final planet!" : "Level complete!",
         success: true,
         time_elapsed: time_elapsed,
+        points_earned: res.locals.pointsEarned,
         nextPlanetUnlocked: res.locals.nextPlanetUnlocked,
         gameCompleted: res.locals.gameCompleted
     });

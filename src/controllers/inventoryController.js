@@ -83,7 +83,7 @@ module.exports.cleanupEmptyItems = (req, res, next) => {
 
     const callback = (error, results) => {
         if (error) {
-            // Log error but don't fail the request since quantity was already decreased
+            // log error but do not fail req
             console.error("Error deleteIfEmpty:", error);
         }
         next();

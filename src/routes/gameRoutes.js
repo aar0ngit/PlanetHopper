@@ -27,6 +27,7 @@ router.post('/complete',
     controller.updateProgress,
     controller.fetchNextPlanet,
     controller.unlockIfAvailable,
+    controller.rewardCompletionPoints,
     controller.sendCompleteResponse
 );
 
