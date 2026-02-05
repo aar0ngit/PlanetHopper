@@ -8,9 +8,9 @@ const pool = require('../services/db');
 
 // greate a new wellness challenge
 module.exports.insertChallenge = (data, callback) => {
-  const SQL = `INSERT INTO wellness_challenges (title, description, category, points_value, created_by) 
-               VALUES (?, ?, ?, ?, ?);`;
-  pool.query(SQL, [data.title, data.description, data.category, data.points_value, data.created_by], callback);
+  const SQL = `INSERT INTO wellness_challenges (title, description, points_value, created_by) 
+               VALUES (?, ?, ?, ?);`;
+  pool.query(SQL, [data.title, data.description, data.points_value, data.created_by], callback);
 };
 
 // get all wellness challenges
@@ -20,16 +20,6 @@ module.exports.selectAllChallenges = (callback) => {
                JOIN users u ON wc.created_by = u.user_id
                ORDER BY wc.created_at DESC;`;
   pool.query(SQL, callback);
-};
-
-// get challenges by category
-module.exports.selectChallengesByCategory = (data, callback) => {
-  const SQL = `SELECT wc.*, u.username as creator_name 
-               FROM wellness_challenges wc
-               JOIN users u ON wc.created_by = u.user_id
-               WHERE wc.category = ?
-               ORDER BY wc.created_at DESC;`;
-  pool.query(SQL, [data.category], callback);
 };
 
 // get a specific challenge by ID
@@ -50,9 +40,9 @@ module.exports.selectChallengesByUser = (data, callback) => {
 // update a challenge (only by creator)
 module.exports.updateChallenge = (data, callback) => {
   const SQL = `UPDATE wellness_challenges 
-               SET title = ?, description = ?, category = ?, points_value = ? 
+               SET title = ?, description = ?, points_value = ? 
                WHERE challenge_id = ? AND created_by = ?;`;
-  pool.query(SQL, [data.title, data.description, data.category, data.points_value, data.challenge_id, data.created_by], callback);
+  pool.query(SQL, [data.title, data.description, data.points_value, data.challenge_id, data.created_by], callback);
 };
 
 // delete a challenge (only by creator)

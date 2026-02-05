@@ -16,8 +16,6 @@ router.get('/', controller.getAllChallenges);
 router.get('/search', controller.searchChallenges);
 
 // get challenges by category
-router.get('/category/:category', controller.getChallengesByCategory);
-
 // get specific challenge
 router.get('/:id', controller.getChallengeById);
 

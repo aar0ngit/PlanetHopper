@@ -1,0 +1,81 @@
+<!-- 
+P2509361
+Aaron Tan
+DIT/FT/1B/08
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalize - Planet Hopper</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-dark">
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4 sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">Planet Hopper</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="shop.html">Shop</a></li>
+                    <li class="nav-item"><a class="nav-link" href="inventory.html">Inventory</a></li>
+                    <li class="nav-item"><a class="nav-link" href="wellness.html">Challenges</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="customize.html">Suit</a></li>
+                    <li class="nav-item mx-2"><a class="btn btn-primary btn-sm px-4" href="planets.html">Play
+                            Mission</a></li>
+                    <li class="nav-item"><a class="nav-link text-danger ms-lg-3" href="#" id="logoutBtn">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4 text-center animate-fade">
+        <h2 class="display-5 fw-bold mb-4">Suit Customization</h2>
+
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="glass-panel p-5">
+                    <div class="player-preview-box rounded mb-4">
+                        <div id="playerPreview" class="player-avatar shadow"></div>
+                    </div>
+
+                    <div class="mb-3 text-start">
+                        <label class="form-label text-muted">Suit Color</label>
+                        <input type="color" class="form-control form-control-color w-100" id="colorInput"
+                            value="#0d6efd">
+                    </div>
+
+                    <div class="mb-4 text-start">
+                        <label class="form-label text-muted">Skin Texture (Upload Image)</label>
+                        <input type="file" class="form-control bg-dark text-white border-secondary" id="skinInput"
+                            accept="image/*">
+                        <div class="form-text text-muted">Supported: PNG, JPG. Max 2MB.</div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button id="saveBtn" class="btn btn-primary py-2">Update Configuration</button>
+                        <button id="clearSkinBtn" class="btn btn-outline-danger btn-sm">Delete & Reset
+                            Configuration</button>
+                    </div>
+
+                    <div id="statusMessage" class="mt-3 text-info small"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/customize.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

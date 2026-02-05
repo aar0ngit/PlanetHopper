@@ -10,7 +10,7 @@
     --bg-dark: #0f172a;
     --bg-card: rgba(30, 41, 59, 0.7);
     --text-main: #f8fafc;
-    --text-muted: #e2e8f0;
+    --text-muted: #e9ecef;
     --glass-border: rgba(255, 255, 255, 0.1);
     --success: #4ade80;
     --danger: #ef4444;
@@ -22,6 +22,11 @@
 
 .text-muted {
     color: var(--text-muted) !important;
+}
+
+::placeholder {
+    color: var(--text-muted) !important;
+    opacity: 1 !important;
 }
 
 /* global styles */
@@ -513,4 +518,27 @@ body {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+/* Character Customization Styles */
+.player-preview-box {
+    width: 200px;
+    height: 200px;
+    background-color: #1a1a1a;
+    border: 2px dashed #444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.player-avatar {
+    width: 60px;
+    height: 90px;
+    background-color: #0d6efd;
+    /* Default */
+    border: 2px solid white;
+    background-size: cover;
+    background-position: center;
+    transition: all 0.3s ease;
 }

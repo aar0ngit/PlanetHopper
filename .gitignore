@@ -159,3 +159,7 @@ public/js/*
 !public/inventory.html
 !public/js/inventory.js
 !public/css/styles.css
+!public/wellness.html
+!public/js/wellness.js
+!public/customize.html
+!public/js/customize.js

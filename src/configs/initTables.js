@@ -34,12 +34,10 @@ CREATE TABLE wellness_challenges (
     challenge_id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     description TEXT,
-    category ENUM('Cardio', 'Strength', 'Mindfulness', 'Nutrition', 'Sleep') NOT NULL,
     points_value INT NOT NULL,
     created_by INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (created_by) REFERENCES users(user_id) ON DELETE CASCADE,
-    INDEX idx_category (category),
     INDEX idx_points (points_value)
 );
 
@@ -142,14 +140,14 @@ INSERT INTO users (username, email, password_hash, points) VALUES
 ('maximumspace', 'maximumspace@example.com', '$2b$10$placeholder', 100);
 
 -- Wellness Challenges
-INSERT INTO wellness_challenges (title, description, category, points_value, created_by) VALUES
-('Sleep like a boss', 'Get 7+ hours of sleep', 'Sleep', 10, 1),
-('Stairs over elevator? Respect.', 'Take the stairs today', 'Cardio', 20, 1),
-('Digital detox (mini edition)', 'No phone for 1 hour', 'Mindfulness', 10, 2),
-('Touch grass IRL', 'Take a 15-minute walk outside', 'Cardio', 10, 2),
-('IRL > DMs', 'Talk to a friend face-to-face', 'Mindfulness', 20, 2),
-('Declutter your chaos', 'Clean your desk or room', 'Mindfulness', 20, 3),
-('Help a homie', 'Assist someone without being asked', 'Mindfulness', 20, 3);
+INSERT INTO wellness_challenges (title, description, points_value, created_by) VALUES
+('Sleep like a boss', 'Get 7+ hours of sleep', 10, 1),
+('Stairs over elevator? Respect.', 'Take the stairs today', 20, 1),
+('Digital detox (mini edition)', 'No phone for 1 hour', 10, 2),
+('Touch grass IRL', 'Take a 15-minute walk outside', 10, 2),
+('IRL > DMs', 'Talk to a friend face-to-face', 20, 2),
+('Declutter your chaos', 'Clean your desk or room', 20, 3),
+('Help a homie', 'Assist someone without being asked', 20, 3);
 
 -- Seed Shop Items
 INSERT INTO shop_items (name, description, cost, effect_type, effect_duration, icon_class) VALUES

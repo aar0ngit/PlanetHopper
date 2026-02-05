@@ -8,26 +8,20 @@ const model = require('../models/challengeModel');
 
 // create new challenge
 module.exports.createChallenge = (req, res) => {
-  const { title, description, category, points_value } = req.body;
+  const { title, description, points_value } = req.body;
 
   // input validation
-  if (!title || !category || !points_value) {
-    return res.status(400).json({ message: "Title, category, and points_value required" });
+  if (!title || !points_value) {
+    return res.status(400).json({ message: "Title and points_value required" });
   }
 
   if (points_value < 10 || points_value > 500) {
     return res.status(400).json({ message: "Points must be between 10 and 500" });
   }
 
-  const validCategories = ['Cardio', 'Strength', 'Mindfulness', 'Nutrition', 'Sleep'];
-  if (!validCategories.includes(category)) {
-    return res.status(400).json({ message: "Invalid category" });
-  }
-
   const data = {
     title,
     description,
-    category,
     points_value,
     created_by: res.locals.userId
   };
@@ -60,24 +54,6 @@ module.exports.getAllChallenges = (req, res) => {
   };
 
   model.selectAllChallenges(callback);
-};
-
-// get challenges by category
-module.exports.getChallengesByCategory = (req, res) => {
-  const data = {
-    category: req.params.category
-  };
-
-  const callback = (error, results) => {
-    if (error) {
-      console.error("Error selectChallengesByCategory:", error);
-      return res.status(500).json({ message: "Database error" });
-    }
-
-    res.status(200).json(results);
-  };
-
-  model.selectChallengesByCategory(data, callback);
 };
 
 // get challenge by id
