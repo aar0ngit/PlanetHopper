@@ -112,3 +112,26 @@ module.exports.validatePlanetUnlocked = (req, res, next) => {
 
     planetModel.checkPlanetUnlocked(data, callback);
 };
+
+// fetch planet leaderboard
+module.exports.fetchLeaderboard = (req, res, next) => {
+    const data = {
+        planet_id: req.params.planet_id
+    };
+
+    const callback = (error, results) => {
+        if (error) {
+            console.error("Error getPlanetLeaderboard:", error);
+            return res.status(500).json({ message: "Database error" });
+        }
+        res.locals.leaderboard = results;
+        next();
+    };
+
+    planetModel.getPlanetLeaderboard(data, callback);
+};
+
+// send leaderboard response
+module.exports.sendLeaderboardResponse = (req, res) => {
+    res.status(200).json(res.locals.leaderboard);
+};

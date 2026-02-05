@@ -23,6 +23,7 @@ router.post('/start',
 // POST /api/game/complete
 router.post('/complete',
     jwtMiddleware.verifyToken,
+    jwtMiddleware.verifyGameToken,
     controller.validateCompleteParams,
     controller.updateProgress,
     controller.fetchNextPlanet,

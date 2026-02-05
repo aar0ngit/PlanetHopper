@@ -57,6 +57,16 @@ module.exports.fetchObstacles = (req, res, next) => {
 // send game data
 module.exports.sendGameData = (req, res) => {
     const characterModel = require('../models/characterModel');
+    const jwt = require('jsonwebtoken');
+
+    // create a temporary game token
+    const gamePayload = {
+        planet_id: res.locals.planetId,
+        start_time: Date.now()
+    };
+
+    // sign with a secret
+    const gameToken = jwt.sign(gamePayload, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
 
     // fetch character settings
     const callback = (err, results) => {
@@ -70,7 +80,8 @@ module.exports.sendGameData = (req, res) => {
             planetData: res.locals.planetData,
             obstacles: res.locals.obstacles,
             loadout: req.body.loadout || [],
-            character: character
+            character: character,
+            game_token: gameToken // send token to client
         });
     };
 

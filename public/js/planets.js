@@ -1,4 +1,4 @@
-import { fetchPlanets as apiFetchPlanets } from './query/api.js';
+import { fetchPlanets as apiFetchPlanets, fetchPlanetLeaderboard } from './query/api.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
@@ -21,13 +21,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const statsContent = document.getElementById('statsContent');
     const closeStatsBtn = document.getElementById('closeStats');
     const missionLaunchBtn = document.getElementById('missionLaunchBtn');
+    const leaderboardBtn = document.getElementById('leaderboardBtn');
+    const leaderboardList = document.getElementById('leaderboardList');
+    const leaderboardModal = new bootstrap.Modal(document.getElementById('leaderboardModal'));
 
     // fetch planets
     {
         const callback = (err, planets) => {
             if (err) {
                 showAlert('danger', 'Failed to load planets: ' + err.message);
-                planetsContainer.innerHTML = '<p class="text-center text-danger">Error loading starchart.</p>';
+                planetsContainer.innerHTML = '<p class="text-center text-danger">Error loading Map.</p>';
                 return;
             }
             renderPlanets(planets);
@@ -63,6 +66,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
             planetsContainer.appendChild(col);
         });
+
+        // Add "Coming Soon" placeholder
+        const comingSoonCol = document.createElement('div');
+        comingSoonCol.className = 'col-6 col-md-4 col-lg-2';
+        comingSoonCol.innerHTML = `
+            <div class="planet-card locked" style="cursor: default;">
+                <div class="planet-img-container d-flex align-items-center justify-content-center bg-transparent shadow-none" 
+                     style="border: 2px dashed rgba(255,255,255,0.2);">
+                    <span class="fs-1 text-muted opacity-50">+</span>
+                </div>
+                <h5 class="mt-3 fw-bold text-uppercase small letter-spacing-1 text-muted">More Coming Soon</h5>
+            </div>
+        `;
+        planetsContainer.appendChild(comingSoonCol);
     }
 
     // open mission briefing
@@ -97,9 +114,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
         missionLaunchBtn.href = `loadout.html?planet=${planet.planet_id}`;
 
+        // attach leaderboard event
+        leaderboardBtn.onclick = () => showLeaderboard(planet.planet_id, planet.name);
+
         // show overlay
         statsBox.style.display = 'block';
         statsBackdrop.style.display = 'flex';
+    }
+
+    // load and show leaderboard
+    function showLeaderboard(planetId, planetName) {
+        document.querySelector('#leaderboardModal .modal-title').textContent = `Top Runners - ${planetName}`;
+        leaderboardList.innerHTML = '<div class="text-center p-4"><div class="spinner-border text-primary"></div></div>';
+
+        leaderboardModal.show();
+
+        fetchPlanetLeaderboard(planetId, token, (err, data) => {
+            if (err) {
+                leaderboardList.innerHTML = `<div class="p-4 text-center text-danger">Failed to load payload: ${err.message}</div>`;
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                leaderboardList.innerHTML = '<div class="p-4 text-center text-muted">No successful missions logged yet. Be the first!</div>';
+                return;
+            }
+
+            let html = '';
+            data.forEach((entry, index) => {
+                const isFirst = index === 0;
+                const badgeColor = isFirst ? 'text-warning' : (index === 1 ? 'text-secondary' : (index === 2 ? 'text-danger' : 'text-muted'));
+                const icon = isFirst ? 'bi-trophy-fill' : 'bi-person-fill';
+
+                html += `
+                    <div class="list-group-item bg-transparent border-bottom border-white border-opacity-10 d-flex justify-content-between align-items-center px-4 py-3">
+                        <div class="d-flex align-items-center">
+                            <span class="fw-bold fs-5 me-3 ${badgeColor}">#${index + 1}</span>
+                            <div>
+                                <div class="fw-bold text-white">${entry.username}</div>
+                                <small class="text-muted">${entry.times_completed} completions</small>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div class="fw-bold text-accent font-monospace">${entry.best_time_seconds}s</div>
+                        </div>
+                    </div>
+                `;
+            });
+            leaderboardList.innerHTML = html;
+        });
     }
 
     // close mission briefing

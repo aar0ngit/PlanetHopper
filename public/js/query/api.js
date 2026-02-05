@@ -176,6 +176,14 @@ export const fetchPlanets = function (token, callback) {
     }, 'GET', null, token);
 };
 
+// fetch planet leaderboard
+export const fetchPlanetLeaderboard = function (planetId, token, callback) {
+    fetchMethod(`/api/planets/${planetId}/leaderboard`, function (status, ok, resData) {
+        if (ok) callback(null, resData);
+        else { showErrorModal("Fetch Error", resData.message || "Fetch error"); callback({ message: resData.message }, null); }
+    }, 'GET', null, token);
+};
+
 // start a game session
 export const startGame = function (planetId, token, callback) {
     fetchMethod('/api/game/start', function (status, ok, resData) {

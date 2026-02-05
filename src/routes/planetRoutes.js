@@ -30,4 +30,11 @@ router.get('/:planet_id/obstacles',
     controller.sendObstaclesResponse
 );
 
+// GET /api/planets/:planet_id/leaderboard
+router.get('/:planet_id/leaderboard',
+    jwtMiddleware.verifyToken,
+    controller.fetchLeaderboard,
+    controller.sendLeaderboardResponse
+);
+
 module.exports = router;

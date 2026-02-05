@@ -123,3 +123,17 @@ module.exports.getNextPlanetId = (data, callback) => {
                  );`;
     pool.query(SQL, [data.planet_id], callback);
 };
+
+// get planet leaderboard
+module.exports.getPlanetLeaderboard = (data, callback) => {
+    const SQL = `SELECT 
+                    u.username,
+                    upp.best_time_seconds,
+                    upp.times_completed
+                 FROM user_planet_progress upp
+                 JOIN users u ON upp.user_id = u.user_id
+                 WHERE upp.planet_id = ? AND upp.best_time_seconds IS NOT NULL
+                 ORDER BY upp.best_time_seconds ASC
+                 LIMIT 10;`;
+    pool.query(SQL, [data.planet_id], callback);
+};

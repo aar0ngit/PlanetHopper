@@ -65,3 +65,32 @@ module.exports.verifyToken = (req, res, next) => {
 
   jwt.verify(token, secretKey, callback);
 };
+
+module.exports.verifyGameToken = (req, res, next) => {
+  const { game_token, planet_id, time_elapsed } = req.body;
+
+  if (!game_token) {
+    return res.status(403).json({ message: "Missing game session token" });
+  }
+
+  const callback = (err, decoded) => {
+    if (err) {
+      return res.status(403).json({ message: "Invalid or expired game token" });
+    }
+
+    // anticheat checks
+    if (decoded.planet_id != planet_id) {
+      return res.status(403).json({ message: "Invalid game token for this planet" });
+    }
+
+    const serverElapsedTime = Date.now() - decoded.start_time;
+
+    if (time_elapsed < 25) {
+      return res.status(403).json({ message: "Completion time too short (Anti-Cheat)" });
+    }
+
+    next();
+  };
+
+  jwt.verify(game_token, secretKey, callback);
+};
