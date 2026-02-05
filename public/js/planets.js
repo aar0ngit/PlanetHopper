@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         leaderboardModal.show();
 
-        fetchPlanetLeaderboard(planetId, token, (err, data) => {
+        const callback = (err, data) => {
             if (err) {
                 leaderboardList.innerHTML = `<div class="p-4 text-center text-danger">Failed to load payload: ${err.message}</div>`;
                 return;
@@ -162,7 +162,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             });
             leaderboardList.innerHTML = html;
-        });
+        };
+        fetchPlanetLeaderboard(planetId, token, callback);
     }
 
     // close mission briefing
