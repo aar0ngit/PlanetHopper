@@ -1,0 +1,86 @@
+<!-- 
+P2509361
+Aaron Tan
+DIT/FT/1B/08
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre-Mission Loadout - Planet Hopper</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+
+<body class="bg-dark">
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">Planet Hopper</a>
+            <div class="ms-auto">
+                <a href="planets.html" class="btn btn-outline-light btn-sm px-3">Back to directory</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4 animate-fade">
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-6">
+                <h1 class="display-5 fw-bold mb-2">Pre-Mission Loadout</h1>
+                <p class="text-muted mb-0">Select up to 4 assets to assist in your orbital descent.</p>
+            </div>
+            <div class="col-lg-6 text-lg-end mt-3 mt-lg-0">
+                <button id="startGameBtn" class="btn btn-primary px-5 py-3 fs-5 glow-button">
+                    Initiate Mission Launch
+                </button>
+            </div>
+        </div>
+
+        <div id="alertPlaceholder"></div>
+
+        <div class="row g-4">
+            <!-- LOADOUT SLOTS -->
+            <div class="col-md-5">
+                <div class="glass-panel p-4 h-100">
+                    <h2 class="h5 fw-bold mb-4 text-accent"><i class="bi bi-cpu me-2"></i>Active Loadout</h2>
+                    <div class="d-flex flex-column gap-3">
+                        <button id="slot1" class="btn btn-outline-secondary p-3 text-start slot-btn w-100">
+                            Slot 1: <span class="text-muted">Empty</span>
+                        </button>
+                        <button id="slot2" class="btn btn-outline-secondary p-3 text-start slot-btn w-100">
+                            Slot 2: <span class="text-muted">Empty</span>
+                        </button>
+                        <button id="slot3" class="btn btn-outline-secondary p-3 text-start slot-btn w-100">
+                            Slot 3: <span class="text-muted">Empty</span>
+                        </button>
+                        <button id="slot4" class="btn btn-outline-secondary p-3 text-start slot-btn w-100">
+                            Slot 4: <span class="text-muted">Empty</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AVAILABLE ASSETS -->
+            <div class="col-md-7">
+                <div class="glass-panel p-4 h-100">
+                    <h2 class="h5 fw-bold mb-4 text-accent"><i class="bi bi-archive me-2"></i>Available Assets</h2>
+                    <div id="inventoryContainer" class="d-flex flex-wrap gap-2">
+                        <!-- Injected by JS -->
+                        <div class="p-5 text-center w-100 text-muted">
+                            Scanning hangar bay...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/loadout.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
