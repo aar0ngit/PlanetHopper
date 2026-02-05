@@ -18,6 +18,7 @@ router.post('/register',
   bcryptMiddleware.hashPassword,
   controller.register,
   jwtMiddleware.generateToken,
+  jwtMiddleware.generateRefreshToken,
   jwtMiddleware.sendToken
 );
 
@@ -25,6 +26,14 @@ router.post('/register',
 router.post('/login',
   controller.login,
   bcryptMiddleware.comparePassword,
+  jwtMiddleware.generateToken,
+  jwtMiddleware.generateRefreshToken,
+  jwtMiddleware.sendToken
+);
+
+// refresh token
+router.post('/token/refresh',
+  jwtMiddleware.verifyRefreshToken,
   jwtMiddleware.generateToken,
   jwtMiddleware.sendToken
 );

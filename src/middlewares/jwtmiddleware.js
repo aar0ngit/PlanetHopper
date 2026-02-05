@@ -31,10 +31,35 @@ module.exports.generateToken = (req, res, next) => {
   const token = jwt.sign(payload, secretKey, options, callback);
 };
 
+module.exports.generateRefreshToken = (req, res, next) => {
+  const payload = {
+    userId: res.locals.userId,
+    timestamp: new Date()
+  };
+
+  const options = {
+    algorithm: tokenAlgorithm,
+    expiresIn: "7d", // Longer duration for refresh token
+  };
+
+  const callback = (err, token) => {
+    if (err) {
+      console.error("Error jwt refresh:", err);
+      res.status(500).json(err);
+    } else {
+      res.locals.refreshToken = token;
+      next();
+    }
+  };
+
+  const token = jwt.sign(payload, secretKey, options, callback);
+};
+
 module.exports.sendToken = (req, res, next) => {
   res.status(200).json({
     message: res.locals.message,
     token: res.locals.token,
+    refreshToken: res.locals.refreshToken
   });
 };
 
@@ -91,6 +116,25 @@ module.exports.verifyGameToken = (req, res, next) => {
 
     next();
   };
-
   jwt.verify(game_token, secretKey, callback);
+};
+
+module.exports.verifyRefreshToken = (req, res, next) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return res.status(401).json({ error: 'No refresh token provided' });
+  }
+
+  const callback = (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: "Invalid refresh token" });
+    }
+
+    res.locals.userId = decoded.userId;
+    res.locals.message = "Token refreshed";
+    next();
+  };
+
+  jwt.verify(refreshToken, secretKey, callback);
 };

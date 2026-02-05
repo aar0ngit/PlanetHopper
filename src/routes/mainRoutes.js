@@ -15,10 +15,6 @@ const planetRoutes = require('./planetRoutes');
 const gameRoutes = require('./gameRoutes');
 const characterRoutes = require('./characterRoutes');
 
-const jwtMiddleware = require('../middlewares/jwtmiddleware');
-const bcryptMiddleware = require('../middlewares/bcryptMiddleware');
-const usersController = require('../controllers/usersController');
-
 // map user-related endpoints to /users
 router.use('/users', usersRoutes);
 router.use('/completion', completionRoutes);
@@ -28,19 +24,5 @@ router.use('/inventory', inventoryRoutes);
 router.use('/planets', planetRoutes);
 router.use('/game', gameRoutes);
 router.use('/character', characterRoutes);
-
-router.post("/login",
-    usersController.login,
-    bcryptMiddleware.comparePassword,
-    jwtMiddleware.generateToken,
-    jwtMiddleware.sendToken);
-router.post("/register",
-    usersController.validateRegistrationInput,
-    usersController.checkUsernameExists,
-    usersController.checkEmailExists,
-    bcryptMiddleware.hashPassword,
-    usersController.register,
-    jwtMiddleware.generateToken,
-    jwtMiddleware.sendToken);
 
 module.exports = router;
