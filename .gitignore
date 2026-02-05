@@ -154,3 +154,8 @@ public/js/*
 !public/js/dashboard.js
 !public/js/planets.js
 !public/js/query/
+!public/shop.html
+!public/js/shop.js
+!public/inventory.html
+!public/js/inventory.js
+!public/css/styles.css

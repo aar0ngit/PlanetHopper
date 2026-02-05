@@ -1,0 +1,79 @@
+<!-- 
+P2509361
+Aaron Tan
+DIT/FT/1B/08
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventoy - Planet Hopper</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4 sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">Planet Hopper</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="shop.html">Shop</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="inventory.html">Inventory</a></li>
+                    <li class="nav-item"><a class="nav-link" href="wellness.html">Challenges</a></li>
+                    <li class="nav-item"><a class="nav-link" href="customize.html">Suit</a></li>
+                    <li class="nav-item mx-2"><a class="btn btn-primary btn-sm px-4" href="planets.html">Play
+                            Mission</a></li>
+                    <li class="nav-item"><a class="nav-link text-danger ms-lg-3" href="#" id="logoutBtn">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5 animate-fade">
+        <div class="row mb-5">
+            <div class="col-12">
+                <h1 class="display-4 fw-bold">Inventory</h1>
+                <p class="lead text-muted">A repository of your acquired assets and mission equipment.</p>
+            </div>
+        </div>
+
+        <div id="alertPlaceholder"></div>
+
+        <div class="glass-panel p-4 mb-4">
+            <div class="row g-2 align-items-center mb-4">
+                <div class="col-auto">
+                    <div class="badge bg-primary px-3 py-2">Equipment</div>
+                </div>
+                <div class="col">
+                    <hr class="opacity-25">
+                </div>
+            </div>
+
+            <div class="row g-4" id="inventoryList">
+                <div class="col-12 text-center py-5 opacity-50">
+                    Fetching Inventory
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <p class="text-muted mb-4">Need more equipment for your next mission?</p>
+            <a href="shop.html" class="btn btn-outline-accent px-5 py-3">Visit Black Market</a>
+        </div>
+    </div>
+
+    <script src="js/inventory.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

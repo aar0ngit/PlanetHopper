@@ -1,0 +1,103 @@
+<!-- 
+P2509361
+Aaron Tan
+DIT/FT/1B/08
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galactic Shop - Planet Hopper</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4 sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">Planet Hopper</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item d-lg-none d-xl-block me-3">
+                        <div class="glass-panel px-3 py-1 small d-flex align-items-center">
+                            <span class="text-muted me-2">Credits:</span>
+                            <span class="text-accent fw-bold" id="userPoints">---</span>
+                        </div>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="shop.html">Shop</a></li>
+                    <li class="nav-item"><a class="nav-link" href="inventory.html">Inventory</a></li>
+                    <li class="nav-item"><a class="nav-link" href="wellness.html">Challenges</a></li>
+                    <li class="nav-item"><a class="nav-link" href="customize.html">Suit</a></li>
+                    <li class="nav-item mx-2"><a class="btn btn-primary btn-sm px-4" href="planets.html">Play
+                            Mission</a></li>
+                    <li class="nav-item"><a class="nav-link text-danger ms-lg-3" href="#" id="logoutBtn">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5 animate-fade">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h1 class="display-4 fw-bold">Black Market Hub</h1>
+                <p class="lead text-muted">Exchange your credits for equipment.</p>
+            </div>
+        </div>
+
+        <div id="alertPlaceholder"></div>
+
+        <div class="row g-4 justify-content-center" id="shopItemsContainer">
+            <div class="col-12 text-center py-5">
+                <div class="spinner-grow text-accent" role="status"></div>
+                <p class="mt-2 text-muted">Scanning inventory...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PURCHASE CONFIRMATION MODAL -->
+    <div class="modal fade" id="purchaseModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-panel border-0 text-white">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold">Confirm Acquisition</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <div id="itemPreview" class="mb-4">
+                        <div class="p-4 bg-primary bg-opacity-10 rounded-circle d-inline-block mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="var(--accent)"
+                                class="bi bi-shield-shaded" viewBox="0 0 16 16">
+                                <path
+                                    d="M8 14.933a6.3 6.3 0 0 0 5.618-3.414c.165-.33.376-.657.542-.987a1.03 1.03 0 0 0-.012-1.012c-.172-.3-.432-.577-.732-.821l-.547-.442A6.33 6.33 0 0 0 8 7.067V1.062a.1.1 0 0 0-.013-.051 1.03 1.03 0 0 0-1.874.453V7.07c0 .121.033.24.095.343.332.553.791 1.127 1.252 1.636a6.32 6.32 0 0 0 5.54 2.47c-.165.33-.376.657-.542.987a6.3 6.3 0 0 0-5.618 3.414z" />
+                            </svg>
+                        </div>
+                        <h3 id="buyingItemName" class="fw-bold">---</h3>
+                        <p id="buyingItemDesc" class="text-muted px-4"></p>
+                    </div>
+                    <div class="px-4">
+                        <div class="d-flex justify-content-between p-3 bg-dark bg-opacity-50 rounded-3 mb-4">
+                            <span>Cost:</span>
+                            <span class="text-accent fw-bold"><span id="buyingItemCost">0</span> Credits</span>
+                        </div>
+                        <button id="confirmPurchaseBtn" class="btn btn-primary w-100 py-3">Authorize
+                            Transaction</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/shop.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

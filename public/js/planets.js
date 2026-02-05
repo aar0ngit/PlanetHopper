@@ -50,9 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         <!-- add planet image here -->
                     </div>
                     <h5 class="mt-3 fw-bold text-uppercase small letter-spacing-1">${planet.name}</h5>
-                    <div class="small ${isUnlocked ? 'text-accent' : 'text-muted'}">
-                        ${isUnlocked ? 'Habitable' : 'Encrypted'}
-                    </div>
                 </div>
             `;
 

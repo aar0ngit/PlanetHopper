@@ -45,3 +45,5 @@ function generateObstacleData() {
 }
 
 module.exports = { generateObstacleData };
+
+//partially AI (declared)
