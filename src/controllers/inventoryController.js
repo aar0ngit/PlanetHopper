@@ -4,6 +4,8 @@
 
 const model = require('../models/inventoryModel');
 
+// INVENTORY MANAGEMENT
+
 // get user's inventory
 module.exports.getUserInventory = (req, res) => {
     const data = {
@@ -83,7 +85,6 @@ module.exports.cleanupEmptyItems = (req, res, next) => {
 
     const callback = (error, results) => {
         if (error) {
-            // log error but do not fail req
             console.error("Error deleteIfEmpty:", error);
         }
         next();

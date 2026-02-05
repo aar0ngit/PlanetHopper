@@ -143,3 +143,14 @@ public/css/*
 !public/js/
 public/js/*
 !public/js/placeholder.js
+!public/index.html
+!public/login.html
+!public/register.html
+!public/dashboard.html
+!public/planets.html
+!public/js/index.js
+!public/js/loginUser.js
+!public/js/registerUser.js
+!public/js/dashboard.js
+!public/js/planets.js
+!public/js/query/

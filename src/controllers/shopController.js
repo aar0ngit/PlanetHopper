@@ -18,7 +18,7 @@ module.exports.getAllItems = (req, res) => {
     model.getAllShopItems(callback);
 };
 
-// get shop item by ID
+// get shop item by id
 module.exports.getItemById = (req, res) => {
     const data = {
         item_id: req.params.item_id
@@ -40,9 +40,9 @@ module.exports.getItemById = (req, res) => {
     model.getShopItemById(data, callback);
 };
 
-// PURCHASE TRANSACTION - Multi-step process
+// PURCHASE TRANSACTION
 
-// validate item exists and get details
+// validate item and calculate cost
 module.exports.validateItem = (req, res, next) => {
     const data = {
         item_id: req.body.item_id
@@ -86,7 +86,7 @@ module.exports.checkPoints = (req, res, next) => {
         const userPoints = results[0].points;
 
         if (userPoints < res.locals.totalCost) {
-            return res.status(400).json({ 
+            return res.status(400).json({
                 message: "Insufficient points",
                 required: res.locals.totalCost,
                 available: userPoints
@@ -99,7 +99,7 @@ module.exports.checkPoints = (req, res, next) => {
     model.checkUserPoints(data, callback);
 };
 
-// deduct points from user
+// deduct points from user balance
 module.exports.deductPoints = (req, res, next) => {
     const data = {
         user_id: res.locals.userId,
@@ -118,7 +118,7 @@ module.exports.deductPoints = (req, res, next) => {
     model.deductPoints(data, callback);
 };
 
-// add item to inventory
+// add purchased item to inventory
 module.exports.addToInventory = (req, res, next) => {
     const data = {
         user_id: res.locals.userId,
@@ -138,7 +138,7 @@ module.exports.addToInventory = (req, res, next) => {
     model.addToInventory(data, callback);
 };
 
-// get updated balance and send response
+// get updated balance and return response
 module.exports.completePurchase = (req, res) => {
     const data = {
         user_id: res.locals.userId
@@ -162,7 +162,7 @@ module.exports.completePurchase = (req, res) => {
     model.getUserBalance(data, callback);
 };
 
-// validate purchase input
+// validate purchase input parameters
 module.exports.validatePurchaseInput = (req, res, next) => {
     const { item_id, quantity } = req.body;
 

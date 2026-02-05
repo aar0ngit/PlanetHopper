@@ -4,15 +4,13 @@
 
 const model = require('../models/challengeModel');
 
-
 // CHALLENGE CRUD
 
-
-// create new challenge (protected)
+// create new challenge
 module.exports.createChallenge = (req, res) => {
   const { title, description, category, points_value } = req.body;
 
-  // validation
+  // input validation
   if (!title || !category || !points_value) {
     return res.status(400).json({ message: "Title, category, and points_value required" });
   }
@@ -50,7 +48,7 @@ module.exports.createChallenge = (req, res) => {
   model.insertChallenge(data, callback);
 };
 
-// get all challenges (public)
+// get all challenges
 module.exports.getAllChallenges = (req, res) => {
   const callback = (error, results) => {
     if (error) {
@@ -64,7 +62,7 @@ module.exports.getAllChallenges = (req, res) => {
   model.selectAllChallenges(callback);
 };
 
-// get challenges by category (public)
+// get challenges by category
 module.exports.getChallengesByCategory = (req, res) => {
   const data = {
     category: req.params.category
@@ -82,7 +80,7 @@ module.exports.getChallengesByCategory = (req, res) => {
   model.selectChallengesByCategory(data, callback);
 };
 
-// get challenge by ID (public)
+// get challenge by id
 module.exports.getChallengeById = (req, res) => {
   const data = {
     challenge_id: req.params.id
@@ -104,7 +102,7 @@ module.exports.getChallengeById = (req, res) => {
   model.selectChallengeById(data, callback);
 };
 
-// get challenges created by logged-in user (protected)
+// get challenges created by user
 module.exports.getMyChallenges = (req, res) => {
   const data = {
     user_id: res.locals.userId
@@ -122,7 +120,7 @@ module.exports.getMyChallenges = (req, res) => {
   model.selectChallengesByUser(data, callback);
 };
 
-// delete challenge (protected - only creator can delete)
+// delete challenge
 module.exports.deleteChallenge = (req, res) => {
   const data = {
     challenge_id: req.params.id,
@@ -145,7 +143,7 @@ module.exports.deleteChallenge = (req, res) => {
   model.deleteChallenge(data, callback);
 };
 
-// search challenges (public)
+// search challenges
 module.exports.searchChallenges = (req, res) => {
   const search = req.query.q;
 

@@ -7,7 +7,7 @@ const userModel = require('../models/userModel');
 
 // START GAME
 
-// Initialize Game
+// initialize game
 module.exports.initGameParams = (req, res, next) => {
     const { planet_id } = req.body;
 
@@ -54,20 +54,32 @@ module.exports.fetchObstacles = (req, res, next) => {
     planetModel.getPlanetObstacles({ planet_id }, callback);
 };
 
-// send Game Data
+// send game data
 module.exports.sendGameData = (req, res) => {
-    res.status(200).json({
-        message: "Game started",
-        planetData: res.locals.planetData,
-        obstacles: res.locals.obstacles,
-        loadout: req.body.loadout || []
-    });
-};
+    const characterModel = require('../models/characterModel');
 
+    // fetch character settings
+    const callback = (err, results) => {
+        let character = null;
+        if (!err && results && results.length > 0) {
+            character = results[0];
+        }
+
+        res.status(200).json({
+            message: "Game started",
+            planetData: res.locals.planetData,
+            obstacles: res.locals.obstacles,
+            loadout: req.body.loadout || [],
+            character: character
+        });
+    };
+
+    characterModel.getSettings({ user_id: res.locals.userId }, callback);
+};
 
 // COMPLETE GAME
 
-// Validate Completion Params
+// validate completion params
 module.exports.validateCompleteParams = (req, res, next) => {
     const { planet_id, time_elapsed } = req.body;
 
@@ -79,7 +91,7 @@ module.exports.validateCompleteParams = (req, res, next) => {
     next();
 };
 
-// update User Progress
+// update user progress
 module.exports.updateProgress = (req, res, next) => {
     const { time_elapsed } = req.body;
     const planet_id = res.locals.planetId;
@@ -98,7 +110,7 @@ module.exports.updateProgress = (req, res, next) => {
     planetModel.updatePlanetCompletion(data, callback);
 };
 
-// fetch Next Planet
+// fetch next planet
 module.exports.fetchNextPlanet = (req, res, next) => {
     const planet_id = res.locals.planetId;
 
@@ -114,7 +126,7 @@ module.exports.fetchNextPlanet = (req, res, next) => {
     planetModel.getNextPlanetId({ planet_id }, callback);
 };
 
-// unlock If Available
+// unlock if available
 module.exports.unlockIfAvailable = (req, res, next) => {
     const next_planet_id = res.locals.nextPlanetId;
 
@@ -138,11 +150,11 @@ module.exports.unlockIfAvailable = (req, res, next) => {
     }
 };
 
-// reward Points
+// reward points
 module.exports.rewardCompletionPoints = (req, res, next) => {
     const planet_id = parseInt(res.locals.planetId);
 
-    // map for each planet points
+    // map planet to points
     const pointsMap = {
         1: 20,
         2: 40,
@@ -151,7 +163,7 @@ module.exports.rewardCompletionPoints = (req, res, next) => {
         5: 100
     };
 
-    const points = pointsMap[planet_id] || 25; // 25 point defualt
+    const points = pointsMap[planet_id] || 25;
     res.locals.pointsEarned = points;
 
     const data = {
@@ -162,7 +174,6 @@ module.exports.rewardCompletionPoints = (req, res, next) => {
     const callback = (error) => {
         if (error) {
             console.error("Error adding points:", error);
-            // lgog error
         }
         next();
     };
@@ -170,7 +181,7 @@ module.exports.rewardCompletionPoints = (req, res, next) => {
     userModel.addPoints(data, callback);
 };
 
-// send Complete Response
+// send complete response
 module.exports.sendCompleteResponse = (req, res) => {
     const { time_elapsed } = req.body;
 

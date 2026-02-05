@@ -24,10 +24,10 @@ module.exports.fetchUserProgress = (req, res, next) => {
     planetModel.getUserPlanetProgress(data, callback);
 };
 
+// send planets response
 module.exports.sendPlanetsResponse = (req, res) => {
     res.status(200).json(res.locals.planets);
 };
-
 
 // fetch single planet
 module.exports.fetchPlanetById = (req, res, next) => {
@@ -52,10 +52,10 @@ module.exports.fetchPlanetById = (req, res, next) => {
     planetModel.getPlanetById(data, callback);
 };
 
+// send planet response
 module.exports.sendPlanetResponse = (req, res) => {
     res.status(200).json(res.locals.planet);
 };
-
 
 // fetch planet obstacles
 module.exports.fetchPlanetObstacles = (req, res, next) => {
@@ -75,6 +75,7 @@ module.exports.fetchPlanetObstacles = (req, res, next) => {
     planetModel.getPlanetObstacles(data, callback);
 };
 
+// send obstacles response
 module.exports.sendObstaclesResponse = (req, res) => {
     res.status(200).json(res.locals.obstacles);
 };

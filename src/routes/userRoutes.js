@@ -43,6 +43,12 @@ router.get('/points',
   controller.getUserPoints
 );
 
+// introspect token (server-side decoding)
+router.get('/introspect',
+  jwtMiddleware.verifyToken,
+  controller.introspectToken
+);
+
 
 // get all users (admin)
 router.get('/',

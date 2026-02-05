@@ -1,0 +1,198 @@
+<!-- 
+P2509361
+Aaron Tan
+DIT/FT/1B/08
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planet Hopper - Wellness Gaming Adventure</title>
+    <meta name="description"
+        content="Embark on an interstellar wellness journey. Complete health challenges, earn credits, and explore the galaxy in this unique fitness gaming experience.">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4 sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">Planet Hopper</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#how-it-works">How It Works</a></li>
+                    <li class="nav-item ms-lg-3"><a class="btn btn-outline-light btn-sm px-4" href="login.html">Sign
+                            In</a></li>
+                    <li class="nav-item ms-2"><a class="btn btn-primary btn-sm px-4" href="register.html">Get
+                            Started</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero-section container">
+        <div class="floating-planet planet-1"></div>
+        <div class="floating-planet planet-2"></div>
+        <div class="floating-planet planet-3"></div>
+
+        <div class="row align-items-center">
+            <div class="col-lg-7 animate-fade">
+                <h1 class="hero-title mb-4">Your Space Journey<br>Across the Stars</h1>
+                <p class="hero-subtitle text-muted mb-5">
+                    Go on an interstellar adventure!
+                    Beat and create challenges
+                    and dominate every planet!
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="register.html" class="btn btn-primary cta-btn">
+                        Start Your Mission
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="ms-2"
+                            viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8" />
+                        </svg>
+                    </a>
+                    <a href="login.html" class="btn cta-btn cta-btn-outline">Sign In</a>
+                </div>
+            </div>
+            <div class="col-lg-5 text-center mt-5 mt-lg-0 animate-fade" style="animation-delay: 0.2s;">
+                <div class="glass-panel p-5">
+                    <div class="planet-visual mx-auto mb-4" style="width: 180px; height: 180px; font-size: 3rem;">🚀
+                    </div>
+                    <h3 class="fw-bold mb-2">Ready for Launch?</h3>
+                    <p class="text-muted mb-0">Join many others on your cosmic exploration</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="container my-5 opacity-25 border-top border-light">
+
+    <!-- FEATURES SECTION -->
+    <section id="features" class="container py-5">
+        <div class="text-center mb-5 animate-fade">
+            <h2 class="display-5 fw-bold mb-3">Power Up Your Health</h2>
+            <p class="text-muted lead">Gamify your wellness journey with exciting features</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4 animate-fade" style="animation-delay: 0.1s;">
+                <div class="glass-card p-4 h-100 text-center">
+                    <div class="feature-icon bg-success bg-opacity-10 mx-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                            class="text-success" viewBox="0 0 16 16">
+                            <path
+                                d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15" />
+                        </svg>
+                    </div>
+                    <h4 class="fw-bold mb-3">Wellness Challenges</h4>
+                    <p class="text-muted">Complete health-focused challenges created by the community. From daily
+                        steps to mindfulness exercises, every achievement earns you credits.</p>
+                </div>
+            </div>
+            <div class="col-md-4 animate-fade" style="animation-delay: 0.2s;">
+                <div class="glass-card p-4 h-100 text-center">
+                    <div class="feature-icon bg-primary bg-opacity-10 mx-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                            class="text-primary" viewBox="0 0 16 16">
+                            <path
+                                d="M6 .5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1H9v1.07a7.001 7.001 0 0 1 3.274 12.474l.601.602a.5.5 0 0 1-.707.708l-.746-.746A6.97 6.97 0 0 1 8 16a6.97 6.97 0 0 1-3.422-.892l-.746.746a.5.5 0 0 1-.707-.708l.602-.602A7.001 7.001 0 0 1 7 2.07V1h-.5A.5.5 0 0 1 6 .5m2.5 5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9z" />
+                        </svg>
+                    </div>
+                    <h4 class="fw-bold mb-3">Planet Missions</h4>
+                    <p class="text-muted">Use your earned credits to power exciting runner game missions across
+                        different planets. Dodge obstacles and collect rewards!</p>
+                </div>
+            </div>
+            <div class="col-md-4 animate-fade" style="animation-delay: 0.3s;">
+                <div class="glass-card p-4 h-100 text-center">
+                    <div class="feature-icon bg-secondary bg-opacity-10 mx-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                            class="text-secondary" viewBox="0 0 16 16">
+                            <path
+                                d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l1.25 5h8.22l1.25-5zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0" />
+                        </svg>
+                    </div>
+                    <h4 class="fw-bold mb-3">Galactic Shop</h4>
+                    <p class="text-muted">Spend your hard-earned credits on powerful consumables. Nitro boosts,
+                        shields, and more to help you conquer tougher planets.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="container my-5 opacity-25 border-top border-light">
+
+    <!-- HOW IT WORKS SECTION -->
+    <section id="how-it-works" class="container py-5">
+        <div class="text-center mb-5 animate-fade">
+            <h2 class="display-5 fw-bold mb-3">How It Works</h2>
+            <p class="text-muted lead">Three simple steps to galactic wellness</p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4 animate-fade" style="animation-delay: 0.1s;">
+                <div class="glass-panel p-4 text-center h-100">
+                    <div class="stats-number mb-2">1</div>
+                    <h5 class="fw-bold mb-2">Complete Challenges</h5>
+                    <p class="text-muted small mb-0">Accept wellness challenges and track your real-world health
+                        activities</p>
+                </div>
+            </div>
+            <div class="col-md-4 animate-fade" style="animation-delay: 0.2s;">
+                <div class="glass-panel p-4 text-center h-100">
+                    <div class="stats-number mb-2">2</div>
+                    <h5 class="fw-bold mb-2">Earn Credits</h5>
+                    <p class="text-muted small mb-0">Get rewarded with galactic credits for every challenge you
+                        complete</p>
+                </div>
+            </div>
+            <div class="col-md-4 animate-fade" style="animation-delay: 0.3s;">
+                <div class="glass-panel p-4 text-center h-100">
+                    <div class="stats-number mb-2">3</div>
+                    <h5 class="fw-bold mb-2">Explore Planets</h5>
+                    <p class="text-muted small mb-0">Use credits to play missions and unlock new worlds across the
+                        galaxy</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="container my-5 opacity-25 border-top border-light">
+
+    <!-- CTA SECTION -->
+    <section class="container py-5 mb-5">
+        <div class="glass-panel p-5 text-center animate-fade">
+            <h2 class="display-6 fw-bold mb-3">Ready to Begin Your Journey?</h2>
+            <p class="text-muted lead mb-4">Join the Planet Hopper community and transform your wellness routine
+                into an epic adventure.</p>
+            <a href="register.html" class="btn btn-primary cta-btn">
+                Create Free Account
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="ms-2"
+                    viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8" />
+                </svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="container py-4 text-center">
+        <p class="text-muted small mb-0">© 2026 Planet Hopper. Built for wellness commanders everywhere.</p>
+    </footer>
+
+    <script src="js/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

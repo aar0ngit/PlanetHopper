@@ -5,7 +5,9 @@
 const completionModel = require('../models/completionModel');
 const userModel = require('../models/userModel');
 
-//validate challenge exists
+// COMPLETION LOGIC
+
+// validate challenge exists
 module.exports.validateChallengeExists = (req, res, next) => {
   const challenge_id = parseInt(req.params.id);
 
@@ -19,7 +21,7 @@ module.exports.validateChallengeExists = (req, res, next) => {
       return res.status(404).json({ message: "Challenge not found" });
     }
 
-    // Store challenge data for next middleware
+    // store challenge data
     res.locals.challenge = results[0];
     res.locals.challenge_id = challenge_id;
     next();
@@ -56,7 +58,7 @@ module.exports.insertCompletionRecord = (req, res, next) => {
   const points_earned = res.locals.challenge.points_value;
   let { notes, completion_date } = req.body;
 
-  // final check for completion_date
+  // set default date
   if (!completion_date) {
     completion_date = new Date().toISOString().split('T')[0];
   }
@@ -67,7 +69,7 @@ module.exports.insertCompletionRecord = (req, res, next) => {
       return res.status(500).json({ message: "Database error", error: error.message });
     }
 
-    // store completion ID for response
+    // store completion id
     res.locals.completion_id = results.insertId;
     res.locals.points_earned = points_earned;
     next();
@@ -105,7 +107,7 @@ module.exports.sendCompletionResponse = (req, res) => {
 
 // GET COMPLETIONS
 
-// get user's completion history (protected)
+// get user's completion history
 module.exports.getMyCompletions = (req, res) => {
   const data = {
     user_id: res.locals.userId
@@ -123,7 +125,7 @@ module.exports.getMyCompletions = (req, res) => {
   completionModel.selectCompletionsByUser(data, callback);
 };
 
-// get completions for a specific challenge (public)
+// get completions for a specific challenge
 module.exports.getCompletionsByChallenge = (req, res) => {
   const data = {
     challenge_id: req.params.challenge_id
@@ -141,7 +143,7 @@ module.exports.getCompletionsByChallenge = (req, res) => {
   completionModel.selectCompletionsByChallenge(data, callback);
 };
 
-// get completion count for challenge (public)
+// get completion count for challenge
 module.exports.getCompletionCount = (req, res) => {
   const data = {
     challenge_id: req.params.challenge_id

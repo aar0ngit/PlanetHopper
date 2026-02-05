@@ -58,6 +58,7 @@ module.exports.verifyToken = (req, res, next) => {
 
     res.locals.userId = decoded.userId;
     res.locals.tokenTimestamp = decoded.timestamp;
+    req.userId = decoded.userId; // Make accessible to Multer
 
     next();
   };

@@ -13,6 +13,7 @@ const shopRoutes = require('./shopRoutes');
 const inventoryRoutes = require('./inventoryRoutes');
 const planetRoutes = require('./planetRoutes');
 const gameRoutes = require('./gameRoutes');
+const characterRoutes = require('./characterRoutes');
 
 const jwtMiddleware = require('../middlewares/jwtmiddleware');
 const bcryptMiddleware = require('../middlewares/bcryptMiddleware');
@@ -26,6 +27,7 @@ router.use('/shop', shopRoutes);
 router.use('/inventory', inventoryRoutes);
 router.use('/planets', planetRoutes);
 router.use('/game', gameRoutes);
+router.use('/character', characterRoutes);
 
 router.post("/login",
     usersController.login,

@@ -16,6 +16,7 @@ DROP TABLE IF EXISTS planets;
 DROP TABLE IF EXISTS shop_items;
 DROP TABLE IF EXISTS challenge_completions;
 DROP TABLE IF EXISTS wellness_challenges;
+DROP TABLE IF EXISTS character_settings;
 DROP TABLE IF EXISTS users;
 
 -- EXISTING TABLES
@@ -120,6 +121,16 @@ CREATE TABLE user_planet_progress (
     UNIQUE KEY unique_user_planet (user_id, planet_id)
 );
 
+-- Character Settings
+CREATE TABLE character_settings (
+    setting_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    player_color VARCHAR(7) DEFAULT '#0d6efd',
+    skin_image_url VARCHAR(255),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    UNIQUE KEY unique_user_char (user_id)
+);
+
 
 
 -- DATA
@@ -157,47 +168,9 @@ INSERT INTO planets (name, theme, speed, duration_seconds, background_image, mus
 SELECT 1;
 `;
 
-// dynamic obstacle generator
-const planets = [
-    { id: 1, name: 'Terra', speed: 300, duration: 30 },
-    { id: 2, name: 'Frost', speed: 400, duration: 30 },
-    { id: 3, name: 'Magma', speed: 500, duration: 30 },
-    { id: 4, name: 'Cyber', speed: 600, duration: 30 },
-    { id: 5, name: 'Void', speed: 1000, duration: 30 }
-];
+const { generateObstacleData } = require("./levelGenerator");
 
-let obstacleValues = [];
-planets.forEach(p => {
-    let currentX = 800;
-    const maxDistance = p.speed * p.duration;
-    const baseSpacing = 160;
-
-    let lastType = null;
-    let typeCount = 0;
-
-    while (currentX < maxDistance - 1500) {
-        let type;
-
-        // prevent more than 2 of the same type in a row
-        if (typeCount >= 2) {
-            type = lastType === 'low' ? 'high' : 'low';
-        } else {
-            type = Math.random() > 0.5 ? 'low' : 'high';
-        }
-
-        if (type === lastType) {
-            typeCount++;
-        } else {
-            lastType = type;
-            typeCount = 1;
-        }
-
-        // random spacing between 160 and 230
-        const spacing = Math.floor(Math.random() * (230 - 160 + 1)) + 160;
-        obstacleValues.push(`(${p.id}, '${type}', ${currentX})`);
-        currentX += spacing;
-    }
-});
+const obstacleValues = generateObstacleData();
 
 const DYNAMIC_SQL = `
 INSERT INTO planet_obstacles (planet_id, obstacle_type, position_x) VALUES

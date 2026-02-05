@@ -4,17 +4,16 @@
 
 const model = require('../models/userModel');
 const jwt = require('jsonwebtoken');
+const planetModel = require('../models/planetModel');
 
 // AUTHENTICATION
-
-const planetModel = require('../models/planetModel'); // Add import
 
 // register new user
 module.exports.register = (req, res, next) => {
   const data = {
     username: req.body.username,
     email: req.body.email,
-    password_hash: res.locals.hash // from bcrypt
+    password_hash: res.locals.hash
   };
 
   const callback = (error, results) => {
@@ -26,11 +25,12 @@ module.exports.register = (req, res, next) => {
     res.locals.userId = results.insertId;
     res.locals.message = "User registered successfully";
 
-    // unlock level 1 for everyone
-    planetModel.unlockNextPlanet({ user_id: results.insertId, next_planet_id: 1 }, (err) => {
+    // unlock first level
+    const unlockCallback = (err) => {
       if (err) console.error("Error unlocking planet 1:", err);
       next();
-    });
+    };
+    planetModel.unlockNextPlanet({ user_id: results.insertId, next_planet_id: 1 }, unlockCallback);
   };
 
   model.insertUser(data, callback);
@@ -52,11 +52,11 @@ module.exports.login = (req, res, next) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // store hash and userId for next middleware
+    // store hash and id
     res.locals.hash = results[0].password_hash;
     res.locals.userId = results[0].user_id;
     res.locals.message = "Login successful";
-    next(); // Proceed to comparePassword
+    next();
   };
 
   model.getUserByUsername(data, callback);
@@ -109,10 +109,10 @@ module.exports.checkEmailExists = (req, res, next) => {
 
 // USER PROFILE
 
-// get user profile (protected)
+// get user profile
 module.exports.getUserProfile = (req, res) => {
   const data = {
-    user_id: res.locals.userId // From JWT token
+    user_id: res.locals.userId
   };
 
   const callback = (error, results) => {
@@ -131,7 +131,7 @@ module.exports.getUserProfile = (req, res) => {
   model.selectUserById(data, callback);
 };
 
-// get user by ID
+// get user by id
 module.exports.readUserById = (req, res) => {
   const data = {
     user_id: req.params.user_id
@@ -167,6 +167,7 @@ module.exports.readAllUsers = (req, res) => {
   model.selectAllUsers(callback);
 };
 
+
 // POINTS MANAGEMENT
 
 // get user's points balance
@@ -191,4 +192,7 @@ module.exports.getUserPoints = (req, res) => {
   model.getUserPoints(data, callback);
 };
 
-
+// introspect token
+module.exports.introspectToken = (req, res) => {
+  res.status(200).json({ userId: res.locals.userId });
+};
