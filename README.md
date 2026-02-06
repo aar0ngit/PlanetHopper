@@ -86,16 +86,42 @@ The server will run on `http://localhost:3000`.
 
 ## Key API Endpoints
 
-| Method | Endpoint | Description |
-| **Auth** | | |
-| POST | `/api/users/login` | Authenticates user and returns JWT & Refresh Token |
-| POST | `/api/users/register` | Creates a new user account |
-| POST | `/api/users/token/refresh` | Exchanges a valid Refresh Token for a new Access Token |
-| **Wellness** | | |
-| GET | `/api/challenges` | List all community challenges |
-| POST | `/api/challenges` | Create a new challenge (Protected) |
-| POST | `/api/completion/:id` | Log completion of a challenge to earn points |
-| **Game** | | |
-| POST | `/api/game/start` | Initiates a game session and returns a signed `game_token` |
-| POST | `/api/game/complete` | Validates `game_token` and updates progress/leaderboards |
-| GET | `/api/planets/:id/leaderboard` | Gets the top completion times for a planet |
+### Authentication & Users
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :---: |
+| `POST` | `/api/users/register` | Register a new user account | No |
+| `POST` | `/api/users/login` | Login and receive JWT & Refresh Token | No |
+| `POST` | `/api/users/token/refresh` | Refresh an expired access token | No |
+| `GET` | `/api/users/profile` | Get logged-in user's profile | Yes |
+| `GET` | `/api/users/points` | Get logged-in user's current points | Yes |
+
+### Challenges & Completions
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :---: |
+| `GET` | `/api/challenges` | List all available challenges | No |
+| `POST` | `/api/challenges` | Create a new community challenge | Yes |
+| `GET` | `/api/challenges/:id` | Get details of a specific challenge | No |
+| `POST` | `/api/completion/:id` | Mark a challenge as completed | Yes |
+| `GET` | `/api/completion/me` | View your completion history | Yes |
+
+### Game System
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :---: |
+| `POST` | `/api/game/start` | Start a game session (Returns `game_token`) | Yes |
+| `POST` | `/api/game/complete` | Complete a game session & record score | Yes |
+| `GET` | `/api/planets` | List all planets and user progress | Yes |
+| `GET` | `/api/planets/:id/leaderboard` | Get leaderboard for a specific planet | Yes |
+
+### Shop & Inventory
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :---: |
+| `GET` | `/api/shop/items` | List all items available in the shop | No |
+| `POST` | `/api/shop/purchase` | Purchase an item with points | Yes |
+| `GET` | `/api/inventory/:user_id` | View a user's inventory | Yes |
+| `POST` | `/api/inventory/use` | Use a consumable item | Yes |
+
+### Character Customization
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :---: |
+| `GET` | `/api/character` | Get current character customization | Yes |
+| `PUT` | `/api/character` | Update character skin/color | Yes |
