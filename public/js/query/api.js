@@ -5,8 +5,45 @@
 // ERROR HELPERS
 
 // simple error alert
+// GLOBAL TOAST NOTIFICATION
+const showToast = function (title, message, type = 'danger') {
+    let container = document.getElementById('globalToastContainer');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'globalToastContainer';
+        container.style.cssText = 'position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `alert alert-${type} glass-card border-0 animate-fade shadow-lg text-white mb-0`;
+    toast.style.minWidth = '300px';
+    toast.style.backgroundColor = type === 'danger' ? 'rgba(220, 53, 69, 0.9)' : 'rgba(13, 110, 253, 0.9)';
+
+    toast.innerHTML = `
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <strong class="me-2">${title}</strong>
+            </div>
+            <button type="button" class="btn-close btn-close-white small" onclick="this.parentElement.parentElement.remove()"></button>
+        </div>
+        <div class="small mt-1 opacity-75">${message}</div>
+    `;
+
+    container.appendChild(toast);
+
+    // Auto remove
+    setTimeout(() => {
+        toast.style.transition = 'opacity 1s ease, transform 1s ease';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => toast.remove(), 1000);
+    }, 10000);
+};
+
+// simple error alert
 const showErrorModal = function (title, message) {
-    alert(title + ": " + message);
+    showToast(title, message, 'danger');
 };
 
 // FETCH WRAPPER

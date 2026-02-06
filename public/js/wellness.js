@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('logoutBtn').addEventListener('click', function (e) {
         e.preventDefault();
         localStorage.removeItem('token');
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
     });
 
     // decode user id
@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const callback = (err, resData) => {
             if (err) {
-                showAlert('danger', 'Failed to log completion: ' + err.message);
+                console.log('Failed to log completion: ' + err.message);
             } else if (resData.points_earned) {
                 showAlert('success', `Mission Complete! Received ${resData.points_earned} Galactic Credits.`);
                 completeModal.hide();

@@ -133,36 +133,7 @@ dist
 pathway.*
 brief.*
 
-#work in progress
-public/*
-!public/images/
-!public/placeholder.html
-!public/css/
-public/css/*
-!public/css/placeholder.css
-!public/js/
-public/js/*
-!public/js/placeholder.js
-!public/index.html
-!public/login.html
-!public/register.html
-!public/dashboard.html
-!public/planets.html
-!public/js/index.js
-!public/js/loginUser.js
-!public/js/registerUser.js
-!public/js/dashboard.js
-!public/js/planets.js
-!public/js/query/
-!public/shop.html
-!public/js/shop.js
-!public/inventory.html
-!public/js/inventory.js
-!public/css/styles.css
-!public/wellness.html
-!public/js/wellness.js
-!public/customize.html
-!public/js/customize.js
-!public/music/
-!public/js/loadout.js
-!public/loadout.html
+# Ignore uploaded skins
+public/uploads/skins/*
+!public/uploads/skins/placeholder
+
