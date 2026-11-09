@@ -2,7 +2,7 @@
 
 **A wellness challenge app with a browser runner game built in.** Complete real-life wellness challenges to earn credits, spend them on power-ups, then hop across five planets while dodging obstacles and a chaser.
 
-**Live demo:** _coming soon_ · click **Play as guest** to try it without signing up.
+**Live demo:** [planet-hopper-three.vercel.app](https://planet-hopper-three.vercel.app/) · click **Play as guest** to try it without signing up.
 
 ![Planet Hopper gameplay](docs/gameplay.jpg)
 
