@@ -194,7 +194,7 @@ body {
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(10px);
     }
 
     to {
@@ -204,7 +204,7 @@ body {
 }
 
 .animate-fade {
-    animation: fadeIn 0.8s ease forwards;
+    animation: fadeIn 0.35s ease-out forwards;
 }
 
 .game-body {

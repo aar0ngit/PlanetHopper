@@ -23,12 +23,15 @@ const showToast = function (title, message, type = 'danger') {
     toast.innerHTML = `
         <div class="d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center">
-                <strong class="me-2">${title}</strong>
+                <strong class="me-2"></strong>
             </div>
-            <button type="button" class="btn-close btn-close-white small" onclick="this.parentElement.parentElement.remove()"></button>
+            <button type="button" class="btn-close btn-close-white small" aria-label="Close"></button>
         </div>
-        <div class="small mt-1 opacity-75">${message}</div>
+        <div class="small mt-1 opacity-75"></div>
     `;
+    toast.querySelector('strong').textContent = title;
+    toast.querySelector('.small.mt-1').textContent = message;
+    toast.querySelector('.btn-close').addEventListener('click', () => toast.remove());
 
     container.appendChild(toast);
 
@@ -50,7 +53,6 @@ const showErrorModal = function (title, message) {
 
 // core fetch method
 const fetchMethod = function (url, callback, method = "GET", data = null, token = null) {
-    console.log("fetchMethod: ", url, method, data, token);
 
     const headers = {};
     if (data && !(data instanceof FormData)) {
@@ -302,7 +304,27 @@ export { fetchMethod };
 // EVENT LISTENERS
 
 // global listener for expired sessions
+let refreshing = false;
 document.addEventListener('auth:expired', function () {
-    localStorage.removeItem('token');
-    window.location.href = 'login.html';
+    if (refreshing) return;
+    refreshing = true;
+    const signOut = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        window.location.href = 'login.html';
+    };
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (!refreshToken) return signOut();
+
+    fetch('/api/users/token/refresh', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken })
+    })
+        .then(r => r.ok ? r.json() : Promise.reject())
+        .then(data => {
+            localStorage.setItem('token', data.token);
+            window.location.reload(); // retry the page with the fresh token
+        })
+        .catch(signOut);
 });

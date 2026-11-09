@@ -61,6 +61,7 @@ module.exports.sendGameData = (req, res) => {
 
     // create a temporary game token
     const gamePayload = {
+        user_id: res.locals.userId,
         planet_id: res.locals.planetId,
         start_time: Date.now()
     };

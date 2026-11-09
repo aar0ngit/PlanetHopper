@@ -1,45 +1,24 @@
-const multer = require('multer');
-const path = require('path');
-const fileSystem = require('fs');
-
-// P2509361
+// Planet Hopper: skin image upload
 // Aaron Tan
-// DIT/FT/1B/08
+//
+// Files are kept in memory and saved to the database as a data URL, so uploads
+// also work on serverless hosts (like Vercel) where the disk is read-only.
 
-// ENSURE UPLOAD DIRECTORY EXISTS
-const uploadDir = path.join(__dirname, '../../public/uploads/skins');
-if (!fileSystem.existsSync(uploadDir)) {
-    fileSystem.mkdirSync(uploadDir, { recursive: true });
-}
+const multer = require('multer');
 
-const storage = multer.diskStorage({
-    destination: (req, file, callback) => {
-        const destCallback = callback;
-        destCallback(null, uploadDir);
-    },
-    filename: (req, file, callback) => {
-        // generate unique filename to prevent collisions
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const ext = path.extname(file.originalname);
-        const filenameCallback = callback;
-        filenameCallback(null, 'skin-' + uniqueSuffix + ext);
-    }
-});
+const MAX_BYTES = 300 * 1024; // 300 KB is plenty for a small character skin
 
-// FILTER FILE TYPES
+// accept common image types only (checks the MIME type, not just the extension)
 const fileFilter = (req, file, callback) => {
-    // accept images only
-    const filterCallback = callback;
-    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
-        return filterCallback(new Error('Only image files are allowed!'), false);
+    if (!/^image\/(png|jpe?g|gif|webp)$/.test(file.mimetype)) {
+        return callback(new Error('Only PNG, JPG, GIF or WebP images are allowed'), false);
     }
-    filterCallback(null, true);
+    callback(null, true);
 };
 
-// CONFIGURE UPLOAD LIMITS
 const upload = multer({
-    storage: storage,
-    limits: { fileSize: 2 * 1024 * 1024 }, // 2MB Limit
+    storage: multer.memoryStorage(),
+    limits: { fileSize: MAX_BYTES },
     fileFilter: fileFilter
 });
 

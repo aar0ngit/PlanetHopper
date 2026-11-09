@@ -4,8 +4,11 @@ const jwt = require("jsonwebtoken");
 
 
 const secretKey = process.env.JWT_SECRET_KEY;
-const tokenDuration = process.env.JWT_EXPIRES_IN;
-const tokenAlgorithm = process.env.JWT_ALGORITHM;
+const tokenDuration = process.env.JWT_EXPIRES_IN || "1h";
+const tokenAlgorithm = process.env.JWT_ALGORITHM || "HS256";
+
+// every level lasts 30 s; allow a little slack for frame timing
+const MIN_RUN_SECONDS = 25;
 
 module.exports.generateToken = (req, res, next) => {
   const payload = {
@@ -78,7 +81,10 @@ module.exports.verifyToken = (req, res, next) => {
 
   const callback = (err, decoded) => {
     if (err) {
-      return res.status(401).json({ error: "Invalid token" });
+      if (err.name === "TokenExpiredError") {
+        return res.status(401).json({ message: "JWT expired" });
+      }
+      return res.status(401).json({ message: "Invalid token" });
     }
 
     res.locals.userId = decoded.userId;
@@ -108,10 +114,19 @@ module.exports.verifyGameToken = (req, res, next) => {
       return res.status(403).json({ message: "Invalid game token for this planet" });
     }
 
-    const serverElapsedTime = Date.now() - decoded.start_time;
+    // the token must belong to the logged-in player
+    if (decoded.user_id !== undefined && decoded.user_id !== res.locals.userId) {
+      return res.status(403).json({ message: "Game token belongs to another player" });
+    }
 
-    if (time_elapsed < 25) {
-      return res.status(403).json({ message: "Completion time too short (Anti-Cheat)" });
+    // measure the run on the server, so editing time_elapsed in the browser does nothing
+    const serverElapsedSeconds = (Date.now() - decoded.start_time) / 1000;
+    if (serverElapsedSeconds < MIN_RUN_SECONDS || Number(time_elapsed) < MIN_RUN_SECONDS) {
+      return res.status(403).json({ message: "Run finished too quickly (Anti-Cheat)" });
+    }
+    // the client cannot claim a run longer than really passed (2 s grace for network delay)
+    if (Number(time_elapsed) > serverElapsedSeconds + 2) {
+      return res.status(403).json({ message: "Reported time does not match the server (Anti-Cheat)" });
     }
 
     next();

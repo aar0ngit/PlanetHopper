@@ -50,9 +50,22 @@ module.exports.selectUserById = (data, callback) => {
     pool.query(SQL, [data.user_id], callback);
 };
 
+// public view of another user (no email)
+module.exports.selectPublicUserById = (data, callback) => {
+    const SQL = `SELECT user_id, username, points, created_at
+                 FROM users WHERE user_id = ?;`;
+    pool.query(SQL, [data.user_id], callback);
+};
+
+// guest account: random name, unusable password, starter credits
+module.exports.insertGuestUser = (data, callback) => {
+    const SQL = `INSERT INTO users (username, email, password_hash, points) VALUES (?, ?, ?, ?);`;
+    pool.query(SQL, [data.username, data.email, data.password_hash, data.points], callback);
+};
+
 // get all users (admin function)
 module.exports.selectAllUsers = (callback) => {
-    const SQL = `SELECT user_id, username, email, points, created_at 
+    const SQL = `SELECT user_id, username, points, created_at
                  FROM users;`;
     pool.query(SQL, callback);
 };

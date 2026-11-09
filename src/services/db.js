@@ -1,6 +1,5 @@
-// P2509361
+// Planet Hopper: MySQL connection pool
 // Aaron Tan
-// DIT/FT/1B/08
 
 const mysql = require('mysql2');
 require('dotenv').config();
@@ -11,8 +10,11 @@ const pool = mysql.createPool({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   port: process.env.DB_PORT || 3306,
+  // hosted databases (e.g. TiDB Cloud) need TLS; local MySQL does not
+  ssl: process.env.DB_SSL === 'true' ? { minVersion: 'TLSv1.2', rejectUnauthorized: true } : undefined,
   multipleStatements: true,
-  connectionLimit: 10,
+  // keep the pool small: each serverless instance opens its own connections
+  connectionLimit: process.env.VERCEL ? 2 : 10,
   dateStrings: true
 });
 

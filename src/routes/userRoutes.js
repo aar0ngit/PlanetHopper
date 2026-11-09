@@ -31,6 +31,14 @@ router.post('/login',
   jwtMiddleware.sendToken
 );
 
+// play as guest (no sign-up)
+router.post('/guest',
+  controller.createGuest,
+  jwtMiddleware.generateToken,
+  jwtMiddleware.generateRefreshToken,
+  jwtMiddleware.sendToken
+);
+
 // refresh token
 router.post('/token/refresh',
   jwtMiddleware.verifyRefreshToken,

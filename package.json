@@ -1,32 +1,36 @@
 {
-  "name": "bed-ca1-aar0ngit",
+  "name": "planet-hopper",
   "version": "1.0.0",
-  "description": "Planet Hopper - A Wellness Challenge & Galactic Runner Game",
+  "description": "Planet Hopper: a wellness challenge app and browser runner game (Node.js, Express, MySQL)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "init_tables": "node src/configs/createSchema.js && node src/configs/initTables.js",
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ST0503-BED/bed-ca1-aar0ngit.git"
+    "url": "git+https://github.com/aar0ngit/PlanetHopper.git"
   },
   "keywords": [],
-  "author": "aaron tan",
+  "author": "Aaron Tan",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ST0503-BED/bed-ca1-aar0ngit/issues"
+    "url": "https://github.com/aar0ngit/PlanetHopper/issues"
   },
-  "homepage": "https://github.com/ST0503-BED/bed-ca1-aar0ngit#readme",
+  "homepage": "https://github.com/aar0ngit/PlanetHopper#readme",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.0.2",
-    "mysql2": "^3.16.0",
+    "mysql2": "^3.16.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
     "nodemon": "^3.1.11"
   }
 }

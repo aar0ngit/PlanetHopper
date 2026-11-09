@@ -11,6 +11,9 @@ const upload = require('../middlewares/uploadMiddleware');
 module.exports.handleSkinUpload = (req, res, next) => {
     const callback = (err) => {
         if (err) {
+            if (err.code === 'LIMIT_FILE_SIZE') {
+                return res.status(400).json({ message: "Image must be 300 KB or smaller" });
+            }
             console.error("Upload Error:", err);
             return res.status(400).json({ message: err.message });
         }
@@ -46,7 +49,12 @@ module.exports.updateSettings = (req, res, next) => {
 
     // use file path if uploaded
     if (req.file) {
-        skin_image_url = '/uploads/skins/' + req.file.filename;
+        skin_image_url = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+    }
+
+    // only allow uploaded images or clearing the skin, not arbitrary URLs
+    if (skin_image_url && !String(skin_image_url).startsWith('data:image/')) {
+        skin_image_url = null;
     }
 
     const data = {

@@ -124,7 +124,7 @@ CREATE TABLE character_settings (
     setting_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     player_color VARCHAR(7) DEFAULT '#0d6efd',
-    skin_image_url VARCHAR(255),
+    skin_image_url MEDIUMTEXT,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     UNIQUE KEY unique_user_char (user_id)
 );

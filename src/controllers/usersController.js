@@ -5,6 +5,39 @@
 const model = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const planetModel = require('../models/planetModel');
+const crypto = require('crypto');
+const bcrypt = require('bcrypt');
+
+// GUEST ACCESS
+
+// create a throwaway guest account so visitors can play without signing up
+module.exports.createGuest = (req, res, next) => {
+  const id = crypto.randomBytes(4).toString('hex');
+  const data = {
+    username: `guest_${id}`,
+    email: `guest_${id}@guest.planethopper`,
+    // random password nobody knows: guests can only use the token they get now
+    password_hash: bcrypt.hashSync(crypto.randomBytes(24).toString('hex'), 8),
+    points: 150 // enough to try the shop straight away
+  };
+
+  const callback = (error, results) => {
+    if (error) {
+      console.error("Error insertGuestUser:", error);
+      return res.status(500).json({ message: "Could not create a guest account" });
+    }
+    res.locals.userId = results.insertId;
+    res.locals.message = "Guest session started";
+
+    const unlockCallback = (err) => {
+      if (err) console.error("Error unlocking planet 1:", err);
+      next();
+    };
+    planetModel.unlockNextPlanet({ user_id: results.insertId, next_planet_id: 1 }, unlockCallback);
+  };
+
+  model.insertGuestUser(data, callback);
+};
 
 // AUTHENTICATION
 
@@ -150,7 +183,7 @@ module.exports.readUserById = (req, res) => {
     res.status(200).json(results[0]);
   };
 
-  model.selectUserById(data, callback);
+  model.selectPublicUserById(data, callback);
 };
 
 // get all users

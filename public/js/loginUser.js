@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     // store token
                     localStorage.setItem('token', data.token);
+                    if (data.refreshToken) localStorage.setItem('refreshToken', data.refreshToken);
 
                     showAlert('success', 'Authentication successful! Initiating launch...');
                     setTimeout(() => {
@@ -35,11 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // display status alert
     function showAlert(type, message) {
         if (!alertPlaceholder) return;
-        alertPlaceholder.innerHTML = `
-            <div class="alert alert-${type} glass-card border-0 animate-fade" role="alert">
-                ${message}
-            </div>
-        `;
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type} glass-card border-0 animate-fade`;
+        alert.setAttribute('role', 'alert');
+        alert.textContent = message;
+        alertPlaceholder.replaceChildren(alert);
     }
 
     // authenticate user

@@ -1,88 +1,66 @@
 # Planet Hopper
-### ST0503 Backend Web Development CA2
-**Name:** Aaron Tan  
-**Admin No:** P2509361  
-**Class:** DIT/FT/1B/08  
 
----
+**A wellness challenge app with a browser runner game built in.** Complete real-life wellness challenges to earn credits, spend them on power-ups, then hop across five planets while dodging obstacles and a chaser.
 
-## Overview
+**Live demo:** _coming soon_ · click **Play as guest** to try it without signing up.
 
-**Planet Hopper** combines challenges with digital rewards. In this application, users must complete challenges to earn **Credits**. These credits are used to buy power-ups and skins for the **Planet Hopper**, where players hop across different planets, dodge obstacles, and compete on leaderboards.
+![Planet Hopper gameplay](docs/gameplay.jpg)
 
-## Key Features
+Built solo for the Back-End Web Development module (ST0503) at Singapore Polytechnic, Jan–Feb 2026, then polished and deployed in Nov 2026.
 
-*   **Wellness Hub**: Create and complete community challenges to earn points.
-*   **Planet Hopper Game**: An interactive browser-based game with physics, obstacles, and power-ups.
-*   **Security**:
-    *   **Secure Authentication**: Uses JWT (JSON Web Tokens) for login sessions.
-    *   **Refresh Tokens**: Keeps users logged in securely without re-entering passwords.
-    *   **Anti-Cheat**: Validates game runs on the server to prevent fake high scores.
-*   **Economy**: A full Shop and Inventory system to purchase and equip items (Nitro Boosts, Shields).
-*   **Customization**: Customize your character's color and unlock new skins.
-*   **Leaderboards**: Compete for the fastest times on every planet.
+## Features
+- **Runner game** on HTML canvas: jump, duck and ground-slam past spikes and drones, with per-planet speed, music and backgrounds.
+- **Five planets** that unlock in order, each with its own leaderboard.
+- **Wellness hub:** create and complete community challenges to earn credits.
+- **Shop and loadout:** buy Nitro Boosts and Shields, equip up to 4 before a run.
+- **Character customisation:** pick a colour or upload your own skin image.
+- **Guest mode:** one click creates a throwaway account with starter credits.
 
-## Technology Stack
+## Security
+- Passwords hashed with **bcrypt**; sessions use **JWT** access tokens plus a 7-day **refresh token** the client uses automatically when the access token expires.
+- **Server-side anti-cheat:** each run gets a signed game token tied to the player and planet. The server measures the run time itself, so editing the time in the browser cannot fake a finish.
+- All SQL uses **parameterised queries**; uploads are checked by MIME type and size; other players' emails are never returned by the API.
 
-*   **Frontend**: HTML, CSS, JavaScript.
-*   **Backend**: Node.js, Express.js.
-*   **Database**: MySQL.
-*   **Security**: Bcrypt, JWT.
+## Tech stack
+| Layer | Tools |
+|---|---|
+| Front end | HTML, CSS, Bootstrap 5, vanilla JavaScript (ES modules), Canvas API |
+| Back end | Node.js, Express 5, REST API, MVC structure |
+| Database | MySQL (local) / TiDB Cloud (hosted, MySQL-compatible) |
+| Auth | bcrypt, jsonwebtoken |
+| Hosting | Vercel |
 
-## Setup Instructions
+## Run it locally
+1. `npm install`
+2. Create a `.env` file:
+   ```env
+   DB_HOST=localhost
+   DB_PORT=3306
+   DB_USER=root
+   DB_PASSWORD=your_password
+   DB_DATABASE=planet_hopper
+   JWT_SECRET_KEY=any-long-random-string
+   JWT_EXPIRES_IN=1h
+   JWT_ALGORITHM=HS256
+   ```
+3. `npm run init_tables` creates the database, tables and seed data (planets, obstacles, shop items).
+4. `npm run dev`, then open http://localhost:3000
 
-Follow these steps to get the project running on your local machine.
+## Deploying (Vercel + TiDB Cloud)
+1. Create a free **TiDB Cloud Serverless** cluster and copy its host, port, user and password.
+2. Put those in your local `.env` with `DB_SSL=true` and run `npm run init_tables` once to set up the hosted database.
+3. Import this repo into **Vercel** (framework preset: Express or Other). Add the same variables (`DB_*`, `DB_SSL=true`, `JWT_*`) under **Settings → Environment Variables**, then deploy. `public/` is served as static files and `index.js` exports the Express app as a serverless function.
 
-### 1. Install Dependencies
-Open your terminal in the project folder and run:
-```bash
-npm install
+## Project structure
 ```
-
-### 2. Configure Environment 
-Create a file named `.env` in the root directory and add your settings:
-```env
-# Database Configuration
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=your_password
-DB_DATABASE=bed_ca2_db
-
-# Security Configuration
-JWT_SECRET_KEY=supersecretkey123
-JWT_EXPIRES_IN=1h
-JWT_ALGORITHM=HS256
+public/            front end: pages, CSS, game (js/game/), images, music
+src/app.js         Express app
+src/routes/        API routes
+src/controllers/   request handling (middleware chains)
+src/models/        SQL queries
+src/middlewares/   JWT, bcrypt, uploads
+src/configs/       database setup and level generator
 ```
-
-### 3. Initialize Database
-Run this command to create the database, tables, and seed initial data:
-```bash
-npm run init_tables
-```
-
-### 4. Start the Server
-Start the backend server:
-```bash
-npm run dev
-```
-The server will run on `http://localhost:3000`.
-
-## How to Play
-
-1.  **Register/Login**: Create an account to start your journey.
-2.  **Earn Credits**: Go to the **Challenges** tab and complete a challenge.
-3.  **Gear Up**: Visit the **Shop** to buy a **Nitro Boost** or **Shield**.
-4.  **Race**: Go to **Play Mission**, select a planet, equip your items in the Loadout screen, and launch!
-5.  **Win**: Survive the run to unlock the next planet and climb the leaderboard.
-
-## Project Structure
-
-*   `public/`: Frontend files (HTML, CSS, JS, Images).
-*   `src/config/`: Database setup scripts.
-*   `src/controllers/`: Logic for handling requests.
-*   `src/models/`: SQL queries and database interactions.
-*   `src/routes/`: API route definitions.
-*   `src/middlewares/`: Security checks (JWT, Bcrypt).
 
 ## Key API Endpoints
 
@@ -91,6 +69,7 @@ The server will run on `http://localhost:3000`.
 | :--- | :--- | :--- | :---: |
 | `POST` | `/api/users/register` | Register a new user account | No |
 | `POST` | `/api/users/login` | Login and receive JWT & Refresh Token | No |
+| `POST` | `/api/users/guest` | Start a guest session (no sign-up) | No |
 | `POST` | `/api/users/token/refresh` | Refresh an expired access token | No |
 | `GET` | `/api/users/profile` | Get logged-in user's profile | Yes |
 | `GET` | `/api/users/points` | Get logged-in user's current points | Yes |
@@ -125,3 +104,8 @@ The server will run on `http://localhost:3000`.
 | :--- | :--- | :--- | :---: |
 | `GET` | `/api/character` | Get current character customization | Yes |
 | `PUT` | `/api/character` | Update character skin/color | Yes |
+
+## What I learnt
+- Structuring an Express API with routes, controllers and models so each part stays small.
+- Why the server must never trust the client: the first version of the anti-cheat checked a time the browser sent, which anyone could edit.
+- Getting a stateful app onto serverless hosting: moving uploads out of the file system and into the database, and using a hosted MySQL-compatible database.
